@@ -1,31 +1,41 @@
-# EA-p1-arreglos
+# EA-p2-listas
 
 **Materia:** Estructura de Datos I  
-**Práctica 1:** Arreglos (Arrays)
+**Práctica 2:** Listas Enlazadas
 
 ## Descripción
-Programa interactivo en consola que gestiona un arreglo de equipos de fútbol boliviano de Primera División.
+Programa interactivo en consola que implementa una lista enlazada simple para gestionar frutas tropicales.
 
 ## Funcionalidades
-- Ver todos los equipos
-- Buscar equipo por nombre
-- Agregar nuevo equipo
-- Eliminar equipo
+- Ver lista de frutas
+- Agregar al inicio, final o posición específica
+- Eliminar del inicio, final o posición específica
+- Buscar fruta por nombre
+- Obtener fruta por posición
 
 ## Uso
 ```bash
-python equipos_futbol.py
+python frutas_tropicales.py
 ```
 
 ## Estructura de datos
 ```python
-equipos = [
-    "Club Bolívar",
-    "The Strongest",
-    "Oriente Petrolero",
-    ...
-]
+class Nodo:
+    dato
+    siguiente
+
+class ListaEnlazada:
+    cabeza
+    tamanio
+    # métodos: agregar, eliminar, buscar, obtener...
 ```
+
+## Frutas iniciales
+- Plátano
+- Piña
+- Mango
+- Papaya
+- Sandía
 
 ## Autor
 Raul Heredia
