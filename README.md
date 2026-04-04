@@ -1,41 +1,151 @@
-# EA-p2-listas
+# EA-p3-short
 
 **Materia:** Estructura de Datos I  
-**Práctica 2:** Listas Enlazadas
+**Práctica 3:** Ordenamiento Shell Sort en Go
 
 ## Descripción
-Programa interactivo en consola que implementa una lista enlazada simple para gestionar frutas tropicales.
+Programa en consola escrito en **Go (Golang)** que permite ingresar números y los ordena utilizando el algoritmo Shell Sort.
 
-## Funcionalidades
-- Ver lista de frutas
-- Agregar al inicio, final o posición específica
-- Eliminar del inicio, final o posición específica
-- Buscar fruta por nombre
-- Obtener fruta por posición
+## ¿Qué es Go?
+Go (o Golang) es un lenguaje de programación desarrollado por Google. Es compilado, estáticamente tipado y diseñado para ser simple, eficiente y concurrente.
+
+### Características principales:
+- **Compilado:** El código se compila a código máquina nativo
+- **Rendimiento:** Similar a C/C++ pero más simple
+- **Gestión de memoria:** Tiene recolector de basura (garbage collector)
+- **Tipado estático:** Detecta errores en tiempo de compilación
+- **Sintaxis limpia:** Fácil de leer y escribir
+
+## Requisitos previos
+
+### 1. Instalar Go
+Descarga e instala Go desde: https://go.dev/dl/
+
+**Verificar instalación:**
+```bash
+go version
+```
+
+### 2. Estructura del proyecto
+```
+Practicas/
+├── go.mod          # Módulo de Go
+├── shell_sort.go   # Código fuente
+└── README.md
+```
+
+## Configuración inicial
+
+Crear módulo de Go (ejecutar una sola vez):
+```bash
+go mod init practica3
+```
 
 ## Uso
+
+### Compilar y ejecutar:
 ```bash
-python frutas_tropicales.py
+go run shell_sort.go
 ```
 
-## Estructura de datos
-```python
-class Nodo:
-    dato
-    siguiente
-
-class ListaEnlazada:
-    cabeza
-    tamanio
-    # métodos: agregar, eliminar, buscar, obtener...
+### O compilar primero y luego ejecutar:
+```bash
+go build shell_sort.go
+./shell_sort
 ```
 
-## Frutas iniciales
-- Plátano
-- Piña
-- Mango
-- Papaya
-- Sandía
+## Funcionalidades del programa
+1. **Ingresar números:** Escribe números uno por uno, presiona Enter después de cada uno
+2. **Terminar ingreso:** Escribe `fin` para finalizar la entrada
+3. **Ordenamiento:** Presiona Enter para aplicar Shell Sort
+4. **Ver resultado:** Muestra la lista original y la ordenada
+
+## Algoritmo Shell Sort
+
+El Shell Sort es una generalización del ordenamiento por inserción que permite el intercambio de elementos distantes. Comienza con un `gap` grande y lo va reduciendo hasta 1.
+
+### Implementación en Go:
+```go
+func shellSort(arr []int) []int {
+    n := len(arr)
+    gap := n / 2
+
+    for gap > 0 {
+        for i := gap; i < n; i++ {
+            temp := arr[i]
+            j := i
+            for j >= gap && arr[j-gap] > temp {
+                arr[j] = arr[j-gap]
+                j -= gap
+            }
+            arr[j] = temp
+        }
+        gap /= 2
+    }
+    return arr
+}
+```
+
+## Explicación del código Go
+
+### Paquetes utilizados:
+- `fmt`: Formateo de entrada/salida
+- `bufio`: Lectura de entrada con buffer
+- `os`: Interacción con el sistema operativo
+- `strconv`: Conversión de strings a números
+- `strings`: Manipulación de strings
+
+### Tipos de datos Go usados:
+- `[]int`: Slice (arreglo dinámico) de enteros
+- `string`: Cadena de texto
+
+### Funciones clave:
+- `append()`: Agregar elementos a un slice
+- `copy()`: Copiar slices
+- `strconv.Atoi()`: Convertir string a int
+- `bufio.NewReader()`: Leer entrada del usuario
+
+## Ejemplo de ejecución
+```
+========================================
+   ORDENAMIENTO SHELL SORT
+========================================
+Ingresa números (escribe 'fin' para terminar):
+> 64
+  Agregado: 64
+> 34
+  Agregado: 34
+> 25
+  Agregado: 25
+> 12
+  Agregado: 12
+> 22
+  Agregado: 22
+> 11
+  Agregado: 11
+> 90
+  Agregado: 90
+> fin
+
+Lista original: [64 34 25 12 22 11 90]
+Cantidad de elementos: 7
+
+Presiona Enter para ordenar...
+
+Lista ordenada: [11 12 22 25 34 64 90]
+========================================
+```
+
+## Diferencias Python vs Go
+
+| Aspecto | Python | Go |
+|---------|--------|-----|
+| Tipo de lenguaje | Interpretado | Compilado |
+| Declaración de variables | Dinámica | Estática (:= o var) |
+| Arreglos | Listas | Slices |
+| Lectura input | input() | bufio.Reader |
+| Conversión tipo | int() | strconv.Atoi() |
+| Manejo de errores | try/except | if err != nil |
 
 ## Autor
 Raul Heredia
