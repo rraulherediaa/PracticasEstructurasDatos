@@ -28,57 +28,39 @@ func shellSort(arr []int) []int {
 	return arr
 }
 
-func ingresarNumeros() []int {
-	var numeros []int
-	reader := bufio.NewReader(os.Stdin)
-
-	fmt.Println("Ingresa números (escribe 'fin' para terminar):")
-
-	for {
-		fmt.Print("> ")
-		entrada, _ := reader.ReadString('\n')
-		entrada = strings.TrimSpace(entrada)
-
-		if strings.ToLower(entrada) == "fin" {
-			break
-		}
-
-		numero, err := strconv.Atoi(entrada)
-		if err != nil {
-			fmt.Println("  Error: Ingresa un número válido o 'fin' para terminar.")
-			continue
-		}
-
-		numeros = append(numeros, numero)
-		fmt.Printf("  Agregado: %d\n", numero)
-	}
-
-	return numeros
-}
-
 func main() {
+	reader := bufio.NewReader(os.Stdin)
+	var numeros []int
+
 	fmt.Println(strings.Repeat("=", 40))
 	fmt.Println("   ORDENAMIENTO SHELL SORT")
 	fmt.Println(strings.Repeat("=", 40))
+	fmt.Println("Ingresa exactamente 10 números:")
 
-	numeros := ingresarNumeros()
+	for i := 1; i <= 10; i++ {
+		for {
+			fmt.Printf("Número %d/10: ", i)
+			entrada, _ := reader.ReadString('\n')
+			entrada = strings.TrimSpace(entrada)
 
-	if len(numeros) == 0 {
-		fmt.Println("\nNo se ingresaron números.")
-		return
+			numero, err := strconv.Atoi(entrada)
+			if err != nil {
+				fmt.Println("  Error: Ingresa un número válido.")
+				continue
+			}
+
+			numeros = append(numeros, numero)
+			break
+		}
 	}
 
 	fmt.Printf("\nLista original: %v\n", numeros)
-	fmt.Printf("Cantidad de elementos: %d\n", len(numeros))
 
-	fmt.Print("\nPresiona Enter para ordenar...")
-	bufio.NewReader(os.Stdin).ReadString('\n')
-
-	// Crear copia para no modificar la original
+	// Crear copia para ordenar
 	copia := make([]int, len(numeros))
 	copy(copia, numeros)
 	ordenados := shellSort(copia)
 
-	fmt.Printf("\nLista ordenada: %v\n", ordenados)
+	fmt.Printf("Lista ordenada: %v\n", ordenados)
 	fmt.Println(strings.Repeat("=", 40))
 }

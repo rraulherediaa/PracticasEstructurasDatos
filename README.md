@@ -4,7 +4,7 @@
 **Práctica 3:** Ordenamiento Shell Sort en Go
 
 ## Descripción
-Programa en consola escrito en **Go (Golang)** que permite ingresar números y los ordena utilizando el algoritmo Shell Sort.
+Programa en consola escrito en **Go (Golang)** que solicita exactamente **10 números** y los ordena utilizando el algoritmo Shell Sort.
 
 ## ¿Qué es Go?
 Go (o Golang) es un lenguaje de programación desarrollado por Google. Es compilado, estáticamente tipado y diseñado para ser simple, eficiente y concurrente.
@@ -55,9 +55,9 @@ go build shell_sort.go
 ```
 
 ## Funcionalidades del programa
-1. **Ingresar números:** Escribe números uno por uno, presiona Enter después de cada uno
-2. **Terminar ingreso:** Escribe `fin` para finalizar la entrada
-3. **Ordenamiento:** Presiona Enter para aplicar Shell Sort
+1. **Ingresar exactamente 10 números:** El programa solicita 10 números uno por uno
+2. **Validación de entrada:** Si se ingresa algo que no es número, muestra error y vuelve a pedir
+3. **Ordenamiento automático:** Aplica Shell Sort inmediatamente después de recibir los 10 números
 4. **Ver resultado:** Muestra la lista original y la ordenada
 
 ## Algoritmo Shell Sort
@@ -110,30 +110,28 @@ func shellSort(arr []int) []int {
 ========================================
    ORDENAMIENTO SHELL SORT
 ========================================
-Ingresa números (escribe 'fin' para terminar):
-> 64
-  Agregado: 64
-> 34
-  Agregado: 34
-> 25
-  Agregado: 25
-> 12
-  Agregado: 12
-> 22
-  Agregado: 22
-> 11
-  Agregado: 11
-> 90
-  Agregado: 90
-> fin
+Ingresa exactamente 10 números:
+Número 1/10: 64
+Número 2/10: 34
+Número 3/10: 25
+Número 4/10: 12
+Número 5/10: 22
+Número 6/10: 11
+Número 7/10: 90
+Número 8/10: 5
+Número 9/10: 77
+Número 10/10: 42
 
-Lista original: [64 34 25 12 22 11 90]
-Cantidad de elementos: 7
-
-Presiona Enter para ordenar...
-
-Lista ordenada: [11 12 22 25 34 64 90]
+Lista original: [64 34 25 12 22 11 90 5 77 42]
+Lista ordenada: [5 11 12 22 25 34 42 64 77 90]
 ========================================
+```
+
+## Ejemplo con entrada inválida
+```
+Número 3/10: abc
+  Error: Ingresa un número válido.
+Número 3/10: 25
 ```
 
 ## Diferencias Python vs Go
