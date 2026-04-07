@@ -35,7 +35,7 @@ func main() {
 	fmt.Println(strings.Repeat("=", 40))
 	fmt.Println("   ORDENAMIENTO SHELL SORT")
 	fmt.Println(strings.Repeat("=", 40))
-	fmt.Println("Ingresa exactamente 10 números:")
+	fmt.Println("Ingresa 10 números para ordenarlos de menor a mayor:")
 
 	for i := 1; i <= 10; i++ {
 		for {

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microevaluación 2 - Mapas Conceptuales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab:hover, .tab.active {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .concept-map {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .central-node {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 50px;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0 auto 40px;
+            width: fit-content;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            position: relative;
+        }
+
+        .central-node::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 20px;
+            background: #667eea;
+        }
+
+        .branches {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            position: relative;
+        }
+
+        .branches::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .branch {
+            position: relative;
+            padding-top: 30px;
+        }
+
+        .branch::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 30px;
+            background: #667eea;
+        }
+
+        .concept-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .concept-box:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .concept-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .concept-box h3::before {
+            content: '▶';
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+        }
+
+        .concept-box.expanded h3::before {
+            transform: rotate(90deg);
+        }
+
+        .concept-content {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .concept-box.collapsed .concept-content {
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .concept-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .concept-content li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .concept-content li:last-child {
+            border-bottom: none;
+        }
+
+        .concept-content li::before {
+            content: '•';
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .code-example {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .info-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .concept-map { padding: 20px; }
+            .central-node { font-size: 1.2em; padding: 20px 30px; }
+            .branches { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Microevaluación 2</h1>
+        <p class="subtitle">Estructura de Datos I - Mapas Conceptuales Interactivos</p>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('arreglos')">Arreglos</div>
+            <div class="tab" onclick="showTab('listas')">Listas Enlazadas</div>
+            <div class="tab" onclick="showTab('ordenamiento')">Ordenamiento</div>
+        </div>
+
+        <!-- Arreglos -->
+        <div id="arreglos" class="content active">
+            <div class="concept-map">
+                <div class="central-node">📊 ARREGLOS (Arrays)</div>
+                <div class="branches">
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Definición</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li>Estructura de datos <span class="highlight">lineal</span></li>
+                                    <li>Elementos del <span class="highlight">mismo tipo</span></li>
+                                    <li>Almacenados en <span class="highlight">posiciones contiguas</span> de memoria</li>
+                                    <li>Acceso por <span class="highlight">índice</span> (0 a n-1)</li>
+                                    <li>Tamaño <span class="highlight">fijo</span> (en la mayoría de lenguajes)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Características <span class="info-badge">O(1)</span></h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li>Acceso directo: <span class="highlight">arreglo[i]</span></li>
+                                    <li>Inserción al final: O(1) amortizado</li>
+                                    <li>Búsqueda secuencial: O(n)</li>
+                                    <li>Eliminación requiere desplazamiento: O(n)</li>
+                                    <li>Uso eficiente de caché CPU</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Operaciones Básicas</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li><span class="highlight">Crear:</span> new int[10]</li>
+                                    <li><span class="highlight">Insertar:</span> append(), push()</li>
+                                    <li><span class="highlight">Buscar:</span> indexOf(), find()</li>
+                                    <li><span class="highlight">Eliminar:</span> pop(), remove()</li>
+                                    <li><span class="highlight">Actualizar:</span> arreglo[i] = valor</li>
+                                </ul>
+                                <div class="code-example">
+// Ejemplo en Python
+equipos = ["Bolívar", "The Strongest"]
+equipos.append("Oriente")
+print(equipos[0])  # Bolívar</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Tipos de Arreglos</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li><span class="highlight">Unidimensionales:</span> Vector [n]</li>
+                                    <li><span class="highlight">Bidimensionales:</span> Matriz [n][m]</li>
+                                    <li><span class="highlight">Multidimensionales:</span> Tensor [n][m][p]</li>
+                                    <li><span class="highlight">Dinámicos:</span> ArrayList, slice</li>
+                                    <li><span class="highlight">Estáticos:</span> Array fijo C/Java</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listas Enlazadas -->
+        <div id="listas" class="content">
+            <div class="concept-map">
+                <div class="central-node">🔗 LISTAS ENLAZADAS</div>
+                <div class="branches">
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Estructura del Nodo</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li><span class="highlight">Dato:</span> Información almacenada</li>
+                                    <li><span class="highlight">Siguiente:</span> Referencia al próximo nodo</li>
+                                    <li>Nodos en <span class="highlight">memoria dispersa</span></li>
+                                    <li>Enlace mediante <span class="highlight">punteros/referencias</span></li>
+                                    <li>Último nodo apunta a <span class="highlight">null/nil</span></li>
+                                </ul>
+                                <div class="code-example">
+// Estructura del Nodo
+class Nodo:
+    def __init__(self, dato):
+        self.dato = dato
+        self.siguiente = None</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Tipos de Listas</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li><span class="highlight">Simple:</span> Un solo enlace (siguiente)</li>
+                                    <li><span class="highlight">Doble:</span> Dos enlaces (siguiente + anterior)</li>
+                                    <li><span class="highlight">Circular:</span> Último apunta al primero</li>
+                                    <li><span class="highlight">Circular Doble:</span> Dobles enlaces + circular</li>
+                                    <li><span class="highlight">Con cabecera:</span> Nodo dummy inicial</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Complejidad Temporal</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li>Acceso por índice: <span class="highlight">O(n)</span></li>
+                                    <li>Inserción inicio: <span class="highlight">O(1)</span></li>
+                                    <li>Inserción final: <span class="highlight">O(n)</span> / O(1)*</li>
+                                    <li>Eliminación conocida: <span class="highlight">O(1)</span></li>
+                                    <li>Búsqueda: <span class="highlight">O(n)</span></li>
+                                </ul>
+                                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">*O(1) si se mantiene referencia al final</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Ventajas vs Desventajas</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li>✅ Tamaño <span class="highlight">dinámico</span></li>
+                                    <li>✅ Inserción/eliminación <span class="highlight">eficiente</span></li>
+                                    <li>✅ No requiere <span class="highlight">reubicación</span></li>
+                                    <li>❌ Mayor uso de <span class="highlight">memoria</span> (punteros)</li>
+                                    <li>❌ Acceso <span class="highlight">secuencial</span> obligatorio</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ordenamiento -->
+        <div id="ordenamiento" class="content">
+            <div class="concept-map">
+                <div class="central-node">📈 ALGORITMOS DE ORDENAMIENTO</div>
+                <div class="branches">
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Shell Sort</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li>Mejora del <span class="highlight">ordenamiento por inserción</span></li>
+                                    <li>Compara elementos <span class="highlight">distantes</span> (gap)</li>
+                                    <li>Gap inicial: <span class="highlight">n/2</span>, se reduce hasta 1</li>
+                                    <li>Complejidad: <span class="highlight">O(n²)</span> peor caso, <span class="highlight">O(n log n)</span> mejor</li>
+                                    <li>In-place: <span class="highlight">O(1)</span> espacio extra</li>
+                                </ul>
+                                <div class="code-example">
+// Ejemplo en Go
+func shellSort(arr []int) {
+    gap := len(arr) / 2
+    for gap > 0 {
+        for i := gap; i < n; i++ {
+            // Inserción con gap
+        }
+        gap /= 2
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Clasificación General</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li><span class="highlight">Por comparación:</span> Quick, Merge, Heap</li>
+                                    <li><span class="highlight">No comparación:</span> Counting, Radix, Bucket</li>
+                                    <li><span class="highlight">Estables:</span> Mantienen orden relativo</li>
+                                    <li><span class="highlight">In-place:</span> O(1) memoria extra</li>
+                                    <li><span class="highlight">Adaptativos:</span> Aprovechan datos parcialmente ordenados</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Comparación Algoritmos</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li><span class="highlight">Bubble:</span> O(n²) - Educativo</li>
+                                    <li><span class="highlight">Insertion:</span> O(n²) - Bueno para pocos datos</li>
+                                    <li><span class="highlight">Quick:</span> O(n log n) - Más usado</li>
+                                    <li><span class="highlight">Merge:</span> O(n log n) - Estable</li>
+                                    <li><span class="highlight">Heap:</span> O(n log n) - In-place</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="branch">
+                        <div class="concept-box expanded" onclick="toggleBox(this)">
+                            <h3>Python vs Go</h3>
+                            <div class="concept-content">
+                                <ul>
+                                    <li><span class="highlight">Python:</span> sort() - Timsort O(n log n)</li>
+                                    <li><span class="highlight">Go:</span> sort.Ints() - QuickSort</li>
+                                    <li>Go: <span class="highlight">Compilado</span> + rápido</li>
+                                    <li>Python: <span class="highlight">Interpretado</span> + flexible</li>
+                                    <li>Go: Tipado <span class="highlight">estático</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Desactivar todas las tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar contenido seleccionado
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activar tab seleccionada
+            event.target.classList.add('active');
+        }
+
+        function toggleBox(box) {
+            box.classList.toggle('collapsed');
+        }
+
+        // Todas las cajas expandidas por defecto
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.concept-box').forEach((box) => {
+                box.classList.add('expanded');
+            });
+        });
+    </script>
+</body>
+</html>
