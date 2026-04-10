@@ -1,4 +1,4 @@
-# EA-p3-short
+# ED-p3-short
 
 **Materia:** Estructura de Datos I  
 **Práctica 3:** Ordenamiento Shell Sort en Go
