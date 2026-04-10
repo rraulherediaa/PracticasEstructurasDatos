@@ -1,4 +1,4 @@
-# EA-p2-listas
+# ED-p2-listas
 
 **Materia:** Estructura de Datos I  
 **Práctica 2:** Listas Enlazadas
