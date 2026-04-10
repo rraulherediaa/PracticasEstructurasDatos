@@ -1,4 +1,4 @@
-# EA-p1-arreglos
+# ED-p1-arreglos
 
 **Materia:** Estructura de Datos I  
 **Práctica 1:** Arreglos (Arrays)
