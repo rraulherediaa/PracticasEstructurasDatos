@@ -1,20 +1,19 @@
-# ED-p5-listas
+# ED-p5-colas
 
 **Materia:** Estructura de Datos I  
-**Práctica 5:** Listas en Ruby
+**Práctica 5:** Colas (Queues)
 
 ## Descripción
-Programa en consola escrito en **Ruby** que implementa una lista de alumnos con operaciones de gestión: agregar, eliminar, buscar, calcular promedios y estadísticas.
+Programa en consola escrito en **Ruby** que implementa una cola (queue) de alumnos con operaciones de gestión: encolar, desencolar, ver frente, calcular promedios y estadísticas.
 
-## ¿Qué es Ruby?
-Ruby es un lenguaje de programación dinámico, orientado a objetos, conocido por su sintaxis elegante y productividad. Diseñado por Yukihiro Matsumoto ("Matz") en Japón, enfatiza la simplicidad y la felicidad del programador.
+## ¿Qué es una Cola?
+Una cola es una estructura de datos lineal que sigue el principio **FIFO** (First In, First Out) - el primer elemento en entrar es el primero en salir. Imagina una fila en un supermercado: el primero que llega es el primero en ser atendido.
 
 ### Características principales:
-- **Dinámico:** Tipado dinámico, no necesita compilación
-- **Orientado a objetos:** Todo es un objeto
-- **Sintaxis limpia:** Código legible y expresivo
-- **Gestión automática:** Garbage collector incluido
-- **Multi-paradigma:** Soporta programación funcional, imperativa y orientada a objetos
+- **FIFO:** First In, First Out
+- **Operaciones limitadas:** Solo se puede agregar al final (enqueue) y quitar del frente (dequeue)
+- **Eficiente:** O(1) para enqueue y dequeue
+- **Aplicaciones:** Colas de impresión, planificación de procesos, sistemas de tickets
 
 ## Requisitos previos
 
@@ -43,7 +42,7 @@ Descargar desde: https://rubyinstaller.org/
 ### 2. Estructura del proyecto
 ```
 Practicas/
-├── listas_alumnos.rb   # Código fuente
+├── colas_alumnos.rb   # Código fuente
 └── README.md
 ```
 
@@ -51,22 +50,23 @@ Practicas/
 
 ### Ejecutar directamente:
 ```bash
-ruby listas_alumnos.rb
+ruby colas_alumnos.rb
 ```
 
 ### Hacer ejecutable y ejecutar:
 ```bash
-chmod +x listas_alumnos.rb
-./listas_alumnos.rb
+chmod +x colas_alumnos.rb
+./colas_alumnos.rb
 ```
 
 ## Funcionalidades del programa
-1. **Mostrar alumnos:** Ver todos los alumnos registrados
-2. **Agregar alumno:** Ingresar nombre, carnet, nota y materia
-3. **Eliminar alumno:** Eliminar por número de carnet
-4. **Buscar alumno:** Buscar por número de carnet
-5. **Promedio general:** Calcular el promedio de notas
-6. **Estadísticas:** Ver aprobados, reprobados y promedio
+1. **Mostrar cola:** Ver todos los alumnos en orden de llegada
+2. **Encolar (enqueue):** Agregar alumno al final de la cola
+3. **Desencolar (dequeue):** Quitar alumno del frente de la cola
+4. **Ver frente (peek):** Ver el alumno del frente sin quitarlo
+5. **Verificar si está vacía**
+6. **Promedio general:** Calcular el promedio de notas
+7. **Estadísticas:** Ver aprobados, reprobados y promedio
 
 ## Estructura de datos
 
@@ -84,27 +84,27 @@ class Alumno
 end
 ```
 
-### Clase ListaAlumnos:
+### Clase ColaAlumnos:
 ```ruby
-class ListaAlumnos
+class ColaAlumnos
   def initialize
     @alumnos = []
   end
 
-  def agregar_alumno(alumno)
-    @alumnos << alumno
+  def enqueue(alumno)
+    @alumnos << alumno  # Agregar al final
   end
 
-  def eliminar_alumno(carnet)
-    # Lógica de eliminación
+  def dequeue
+    @alumnos.shift  # Quitar del frente
   end
 
-  def buscar_alumno(carnet)
-    # Lógica de búsqueda
+  def peek
+    @alumnos.first  # Ver el frente
   end
 
-  def mostrar_alumnos
-    # Mostrar lista completa
+  def mostrar_cola
+    # Mostrar cola completa
   end
 
   def promedio_general
@@ -115,41 +115,46 @@ end
 
 ## Ejemplo de ejecución
 ```
---- MENÚ LISTA DE ALUMNOS ---
-1. Mostrar todos los alumnos
-2. Agregar nuevo alumno
-3. Eliminar alumno por carnet
-4. Buscar alumno por carnet
-5. Ver promedio general
-6. Ver estadísticas
-7. Salir
+--- MENÚ COLA DE ALUMNOS ---
+1. Mostrar cola de alumnos
+2. Encolar alumno (agregar al final)
+3. Desencolar alumno (quitar del frente)
+4. Ver frente de la cola
+5. Ver si está vacía
+6. Ver promedio general
+7. Ver estadísticas
+8. Salir
 Elige una opción: 2
 Nombre del alumno: Laura Gómez
 Carnet: 12350
 Nota (0-100): 88
 Materia: Estructura de Datos
-Alumno agregado: Laura Gómez
+Alumno encolado: Laura Gómez
 
 Elige una opción: 1
 
-=== LISTA DE ALUMNOS ===
+=== COLA DE ALUMNOS ===
 Total: 6 alumnos
 
+FRENTE DE LA COLA:
 [0] Juan Pérez (12345) - Estructura de Datos: 85
 [1] María García (12346) - Estructura de Datos: 72
 [2] Carlos López (12347) - Estructura de Datos: 45
 [3] Ana Martínez (12348) - Estructura de Datos: 90
 [4] Pedro Sánchez (12349) - Estructura de Datos: 60
 [5] Laura Gómez (12350) - Estructura de Datos: 88
-=========================
+======================
 
-Elige una opción: 6
+Elige una opción: 3
+Alumno desencolado: Juan Pérez
+
+Elige una opción: 7
 
 === ESTADÍSTICAS ===
-Total alumnos: 6
-Aprobados (>= 51): 5
+Total alumnos: 5
+Aprobados (>= 51): 4
 Reprobados (< 51): 1
-Promedio general: 73.33
+Promedio general: 71.00
 =====================
 ```
 
@@ -157,18 +162,23 @@ Promedio general: 73.33
 
 | Operación | Complejidad |
 |-----------|-------------|
-| Agregar alumno | O(1) |
-| Eliminar alumno | O(n) |
-| Buscar alumno | O(n) |
-| Mostrar alumnos | O(n) |
+| Encolar (enqueue) | O(1) |
+| Desencolar (dequeue) | O(n) |
+| Ver frente (peek) | O(1) |
+| Mostrar cola | O(n) |
 | Promedio general | O(n) |
 | Estadísticas | O(n) |
+
+*Nota: En Ruby, `shift()` es O(n) porque desplaza todos los elementos. Con implementación con punteros sería O(1).
 
 ## Explicación del código Ruby
 
 ### Conceptos clave:
 - **attr_accessor:** Crea getters y setters automáticamente
-- **Array:** Contenedor dinámico para la lista
+- **Array:** Contenedor dinámico para la cola
+- **push/<<:** Agregar al final del array
+- **shift:** Quitar elemento del inicio del array
+- **first:** Ver el primer elemento
 - **each_with_index:** Iterar con índice
 - **find:** Buscar elemento que cumpla condición
 - **select:** Filtrar elementos
@@ -179,7 +189,17 @@ Promedio general: 73.33
 - **Interpolación de strings:** `"#{variable}"`
 - **Símbolos:** `:nombre` para identificadores
 - **Bloques:** `{ |param| ... }` o `do |param| ... end`
-- **Métodos bang:** métodos que modifican el objeto (como `delete`)
+- **Métodos bang:** métodos que modifican el objeto (como `shift`)
+
+## Diferencias Cola vs Pila vs Lista
+
+| Aspecto | Cola (FIFO) | Pila (LIFO) | Lista |
+|---------|-------------|-------------|-------|
+| Principio | First In, First Out | Last In, First Out | Acceso aleatorio |
+| Inserción | Solo al final | Solo al final | Cualquier posición |
+| Eliminación | Solo del frente | Solo del final | Cualquier posición |
+| Acceso | Solo frente | Solo cima | Cualquier elemento |
+| Aplicación | Filas, buffers | Deshacer/Rehacer | Datos generales |
 
 ## Diferencias Ruby vs Python vs C++
 

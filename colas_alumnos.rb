@@ -13,46 +13,56 @@ class Alumno
   end
 end
 
-class ListaAlumnos
+class ColaAlumnos
   def initialize
     @alumnos = []
   end
 
-  def agregar_alumno(alumno)
+  def enqueue(alumno)
     @alumnos << alumno
-    puts "Alumno agregado: #{alumno.nombre}"
+    puts "Alumno encolado: #{alumno.nombre}"
   end
 
-  def eliminar_alumno(carnet)
-    alumno = @alumnos.find { |a| a.carnet == carnet }
-    if alumno
-      @alumnos.delete(alumno)
-      puts "Alumno eliminado: #{alumno.nombre}"
-    else
-      puts "Alumno con carnet #{carnet} no encontrado."
-    end
-  end
-
-  def buscar_alumno(carnet)
-    alumno = @alumnos.find { |a| a.carnet == carnet }
-    if alumno
-      puts "Alumno encontrado: #{alumno}"
-    else
-      puts "Alumno con carnet #{carnet} no encontrado."
-    end
-  end
-
-  def mostrar_alumnos
+  def dequeue
     if @alumnos.empty?
-      puts "No hay alumnos registrados."
+      puts "La cola está vacía. No hay alumnos para desencolar."
+      nil
     else
-      puts "\n=== LISTA DE ALUMNOS ==="
+      alumno = @alumnos.shift
+      puts "Alumno desencolado: #{alumno.nombre}"
+      alumno
+    end
+  end
+
+  def peek
+    if @alumnos.empty?
+      puts "La cola está vacía. No hay alumnos en el frente."
+      nil
+    else
+      @alumnos.first
+    end
+  end
+
+  def mostrar_cola
+    if @alumnos.empty?
+      puts "No hay alumnos en la cola."
+    else
+      puts "\n=== COLA DE ALUMNOS ==="
       puts "Total: #{@alumnos.size} alumnos\n"
+      puts "FRENTE DE LA COLA:"
       @alumnos.each_with_index do |alumno, index|
         puts "[#{index}] #{alumno}"
       end
-      puts "========================\n"
+      puts "======================\n"
     end
+  end
+
+  def esta_vacia?
+    @alumnos.empty?
+  end
+
+  def tamanio
+    @alumnos.size
   end
 
   def promedio_general
@@ -70,14 +80,10 @@ class ListaAlumnos
   def alumnos_reprobados
     @alumnos.select { |a| a.nota < 51 }.size
   end
-
-  def esta_vacia?
-    @alumnos.empty?
-  end
 end
 
-# Inicializar lista con alumnos de ejemplo
-lista = ListaAlumnos.new
+# Inicializar cola con alumnos de ejemplo
+cola = ColaAlumnos.new
 alumnos_iniciales = [
   Alumno.new("Juan Pérez", "12345", 85, "Estructura de Datos"),
   Alumno.new("María García", "12346", 72, "Estructura de Datos"),
@@ -86,24 +92,25 @@ alumnos_iniciales = [
   Alumno.new("Pedro Sánchez", "12349", 60, "Estructura de Datos")
 ]
 
-alumnos_iniciales.each { |alumno| lista.agregar_alumno(alumno) }
+alumnos_iniciales.each { |alumno| cola.enqueue(alumno) }
 
 loop do
-  puts "\n--- MENÚ LISTA DE ALUMNOS ---"
-  puts "1. Mostrar todos los alumnos"
-  puts "2. Agregar nuevo alumno"
-  puts "3. Eliminar alumno por carnet"
-  puts "4. Buscar alumno por carnet"
-  puts "5. Ver promedio general"
-  puts "6. Ver estadísticas"
-  puts "7. Salir"
+  puts "\n--- MENÚ COLA DE ALUMNOS ---"
+  puts "1. Mostrar cola de alumnos"
+  puts "2. Encolar alumno (agregar al final)"
+  puts "3. Desencolar alumno (quitar del frente)"
+  puts "4. Ver frente de la cola"
+  puts "5. Ver si está vacía"
+  puts "6. Ver promedio general"
+  puts "7. Ver estadísticas"
+  puts "8. Salir"
 
   print "Elige una opción: "
   opcion = gets.chomp.to_i
 
   case opcion
   when 1
-    lista.mostrar_alumnos
+    cola.mostrar_cola
 
   when 2
     print "Nombre del alumno: "
@@ -119,32 +126,38 @@ loop do
       puts "Error: La nota debe estar entre 0 y 100."
     else
       alumno = Alumno.new(nombre, carnet, nota, materia)
-      lista.agregar_alumno(alumno)
+      cola.enqueue(alumno)
     end
 
   when 3
-    print "Carnet del alumno a eliminar: "
-    carnet = gets.chomp
-    lista.eliminar_alumno(carnet)
+    cola.dequeue
 
   when 4
-    print "Carnet del alumno a buscar: "
-    carnet = gets.chomp
-    lista.buscar_alumno(carnet)
+    frente = cola.peek
+    if frente
+      puts "Frente de la cola: #{frente}"
+    end
 
   when 5
-    promedio = lista.promedio_general
-    puts "Promedio general: #{promedio}"
+    if cola.esta_vacia?
+      puts "La cola está VACÍA"
+    else
+      puts "La cola NO está vacía (#{cola.tamanio} alumnos)"
+    end
 
   when 6
-    puts "\n=== ESTADÍSTICAS ==="
-    puts "Total alumnos: #{lista.alumnos.size}"
-    puts "Aprobados (>= 51): #{lista.alumnos_aprobados}"
-    puts "Reprobados (< 51): #{lista.alumnos_reprobados}"
-    puts "Promedio general: #{lista.promedio_general}"
-    puts "=====================\n"
+    promedio = cola.promedio_general
+    puts "Promedio general: #{promedio}"
 
   when 7
+    puts "\n=== ESTADÍSTICAS ==="
+    puts "Total alumnos: #{cola.tamanio}"
+    puts "Aprobados (>= 51): #{cola.alumnos_aprobados}"
+    puts "Reprobados (< 51): #{cola.alumnos_reprobados}"
+    puts "Promedio general: #{cola.promedio_general}"
+    puts "=====================\n"
+
+  when 8
     puts "¡Hasta luego!"
     break
 
