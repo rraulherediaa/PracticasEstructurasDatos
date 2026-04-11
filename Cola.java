@@ -7,7 +7,7 @@
  */
 public class Cola<T> {
     private Nodo<T> frente;
-    private Nodo<T> final;
+    private Nodo<T> fin;
     private int tamanio;
 
     /**
@@ -30,7 +30,7 @@ public class Cola<T> {
      */
     public Cola() {
         this.frente = null;
-        this.final = null;
+        this.fin = null;
         this.tamanio = 0;
     }
 
@@ -42,10 +42,10 @@ public class Cola<T> {
         Nodo<T> nuevoNodo = new Nodo<>(dato);
         if (estaVacia()) {
             frente = nuevoNodo;
-            final = nuevoNodo;
+            fin = nuevoNodo;
         } else {
-            final.siguiente = nuevoNodo;
-            final = nuevoNodo;
+            fin.siguiente = nuevoNodo;
+            fin = nuevoNodo;
         }
         tamanio++;
         System.out.println("Elemento encolado: " + dato);
@@ -63,7 +63,7 @@ public class Cola<T> {
         T dato = frente.dato;
         frente = frente.siguiente;
         if (frente == null) {
-            final = null;
+            fin = null;
         }
         tamanio--;
         System.out.println("Elemento desencolado: " + dato);
@@ -123,7 +123,7 @@ public class Cola<T> {
      */
     public void limpiar() {
         frente = null;
-        final = null;
+        fin = null;
         tamanio = 0;
         System.out.println("Cola limpiada.");
     }

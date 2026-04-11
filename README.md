@@ -9,25 +9,26 @@ Implementación completa de una estructura de datos **Cola (Queue)** en Java uti
 ## ¿Qué es una Cola?
 Una cola es una estructura de datos lineal que sigue el principio **FIFO** (First In, First Out) - el primer elemento en entrar es el primero en salir.
 
+### Analogía del Mundo Real
+Imagina una fila en un supermercado:
+- El primer cliente que llega es el primero en ser atendido
+- Los nuevos clientes se agregan al final de la fila
+- Los clientes son atendidos del frente hacia atrás
+
+### Aplicaciones Reales
+1. **Colas de impresión:** Los documentos se imprimen en el orden en que se envían
+2. **Planificación de procesos:** El sistema operativo gestiona procesos en cola
+3. **Sistemas de tickets:** Los clientes son atendidos en orden de llegada
+4. **Buffers de red:** Los paquetes de datos se procesan en orden
+5. **Call centers:** Las llamadas se atienden en orden de llegada
+
 ### Características principales:
 - **FIFO:** First In, First Out
 - **Operaciones limitadas:** Solo se puede agregar al final (enqueue) y quitar del frente (dequeue)
 - **Eficiente:** O(1) para enqueue y dequeue con punteros
 - **Aplicaciones:** Colas de impresión, planificación de procesos, sistemas de tickets
 
-## Diagrama de la Estructura
-
-```
-    ENQUEUE (agregar al final)
-    ↓
-    ┌─────┬─────┬─────┬─────┐
-    │  A  │  B  │  C  │  D  │
-    └─────┴─────┴─────┴─────┘
-      ↑                   ↑
-   FRENTE              FINAL
-      ↑
-    DEQUEUE (quitar del frente)
-```
+**Nota:** Los diagramas Mermaid de los ejemplos están en el archivo `MERMAID.md`
 
 ## Requisitos previos
 
@@ -80,7 +81,7 @@ java Main
 ```java
 public class Cola<T> {
     private Nodo<T> frente;    // Puntero al frente
-    private Nodo<T> final;     // Puntero al final
+    private Nodo<T> fin;       // Puntero al final
     private int tamanio;       // Tamaño de la cola
 
     // Clase interna Nodo
@@ -107,10 +108,10 @@ public void enqueue(T dato) {
     Nodo<T> nuevoNodo = new Nodo<>(dato);
     if (estaVacia()) {
         frente = nuevoNodo;
-        final = nuevoNodo;
+        fin = nuevoNodo;
     } else {
-        final.siguiente = nuevoNodo;
-        final = nuevoNodo;
+        fin.siguiente = nuevoNodo;
+        fin = nuevoNodo;
     }
     tamanio++;
 }
@@ -124,7 +125,7 @@ public T dequeue() {
     if (estaVacia()) return null;
     T dato = frente.dato;
     frente = frente.siguiente;
-    if (frente == null) final = null;
+    if (frente == null) fin = null;
     tamanio--;
     return dato;
 }
