@@ -1,4 +1,4 @@
-# Diagramas Mermaid - Skip List en C# .NET
+# Diagramas Mermaid - Skip List en Java
 
 ## Diagrama de Clases UML
 
@@ -7,25 +7,35 @@ classDiagram
     class SkipList~T~ {
         -SkipListNode~T~ head
         -int maxLevel
-        -float probability
+        -double probability
         -Random random
-        +SkipList(int maxLevel, float probability)
-        +int RandomLevel()
-        +bool Search(T key)
-        +void Insert(T key)
-        +void Delete(T key)
-        +void Print()
+        -int currentLevel
+        +SkipList(int maxLevel, double probability)
+        -int randomLevel()
+        +boolean search(T key)
+        +void insert(T key)
+        +void delete(T key)
+        +void print()
     }
     
     class SkipListNode~T~ {
         -T value
         -SkipListNode~T~[] next
         +SkipListNode(T value, int level)
-        +T GetValue()
-        +SkipListNode~T~[] GetNext()
     }
     
     SkipList~T~ --> SkipListNode~T~ : contains
+    SkipList~T~ --> Paciente : uses
+    
+    class Paciente {
+        -int id
+        -String nombre
+        -int prioridad
+        -String especialidad
+        +Paciente(int id, String nombre, int prioridad, String especialidad)
+        +int compareTo(Paciente other)
+        +String toString()
+    }
 ```
 
 ## Estructura de Skip List

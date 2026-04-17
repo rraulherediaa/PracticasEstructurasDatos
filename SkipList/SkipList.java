@@ -37,8 +37,14 @@ public class SkipList<T extends Comparable<T>> {
         SkipListNode<T> current = head;
         
         for (int i = currentLevel; i >= 0; i--) {
+            int safetyCounter = 0;
             while (current.next[i] != null && current.next[i].value.compareTo(key) < 0) {
                 current = current.next[i];
+                safetyCounter++;
+                if (safetyCounter > 10000) {
+                    System.err.println("Error: Posible bucle infinito en search");
+                    return false;
+                }
             }
         }
         
@@ -49,13 +55,20 @@ public class SkipList<T extends Comparable<T>> {
     /**
      * Inserta un elemento en la SkipList
      */
+    @SuppressWarnings("unchecked")
     public void insert(T key) {
         SkipListNode<T>[] update = new SkipListNode[maxLevel];
         SkipListNode<T> current = head;
         
         for (int i = currentLevel; i >= 0; i--) {
+            int safetyCounter = 0;
             while (current.next[i] != null && current.next[i].value.compareTo(key) < 0) {
                 current = current.next[i];
+                safetyCounter++;
+                if (safetyCounter > 10000) {
+                    System.err.println("Error: Posible bucle infinito en insert");
+                    return;
+                }
             }
             update[i] = current;
         }
@@ -84,13 +97,20 @@ public class SkipList<T extends Comparable<T>> {
     /**
      * Elimina un elemento de la SkipList
      */
+    @SuppressWarnings("unchecked")
     public void delete(T key) {
         SkipListNode<T>[] update = new SkipListNode[maxLevel];
         SkipListNode<T> current = head;
         
         for (int i = currentLevel; i >= 0; i--) {
+            int safetyCounter = 0;
             while (current.next[i] != null && current.next[i].value.compareTo(key) < 0) {
                 current = current.next[i];
+                safetyCounter++;
+                if (safetyCounter > 10000) {
+                    System.err.println("Error: Posible bucle infinito en delete");
+                    return;
+                }
             }
             update[i] = current;
         }
