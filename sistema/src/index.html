@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema Médico - Módulos</title>
+  <style>
+    :root {
+      --primary: #609966;
+      --secondary: #9DC08B;
+      --danger: #e74c3c;
+      --success: #40739e;
+      --bg: #EDF1D6;
+      --surface: #ffffff;
+      --text: #2d3436;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 250px;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      font-size: 1.5rem;
+    }
+    .nav-btn {
+      background: transparent;
+      color: #e8ecef;
+      border: none;
+      padding: 15px 20px;
+      text-align: left;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      border-left: 4px solid transparent;
+    }
+    .nav-btn:hover {
+      color: white;
+      background-color: rgba(0,0,0,0.1);
+    }
+    .nav-btn.active {
+      color: white;
+      background-color: rgba(0,0,0,0.2);
+      border-left: 4px solid var(--secondary);
+      font-weight: bold;
+    }
+    .sidebar-footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+      padding: 15px;
+      line-height: 1.4;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+    .view {
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+    .view.active-view {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards and Forms */
+    .panel {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .panel h2 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 10px;
+      font-size: 1.4rem;
+    }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.95rem; }
+    input, select {
+      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem;
+    }
+    input:focus, select:focus { border-color: var(--secondary); outline: none; }
+    .row { display: flex; gap: 20px; }
+    .row .form-group { flex: 1; }
+    
+    button.btn-primary { background: var(--secondary); color: #1e272e; padding: 14px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1rem; width: 100%; font-weight: bold; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+    button.btn-primary:hover { background: #85a973; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background-color: var(--bg); color: var(--primary); font-weight: 600; }
+    tr:hover { background-color: #f9f9f9; }
+    
+    .badge { padding: 5px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; color: white; }
+    .badge.p-1 { background-color: var(--danger); }
+    .badge.p-2 { background-color: var(--success); }
+
+    .controls { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 20px; }
+    button.btn-success { background: var(--success); color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: bold;}
+    button.btn-danger { background: var(--danger); color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: bold;}
+  </style>
+</head>
+<body>
+
+  <!-- MENÚ PRINCIPAL -->
+  <div class="sidebar">
+    <h2>HOSPITAL RUFUS</h2>
+    <button class="nav-btn active" data-target="view-recepcion">Módulo: Enfermera</button>
+    <button class="nav-btn" data-target="view-consultorio">Módulo: Consultorio</button>
+    <button class="nav-btn" data-target="view-historial">Módulo: Historial (Pila)</button>
+    <button class="nav-btn" data-target="view-pacientes">Directorio (SkipList)</button>
+    <button class="nav-btn" id="btnReset" style="color: #ff7675; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1);">🧹 Borrar Todos los Datos</button>
+    
+    <div class="sidebar-footer" style="margin-top: 0;">
+      Desarrollado por<br>
+      <strong>Raúl Heredia</strong><br>
+      © 2026 Todos los derechos reservados
+    </div>
+  </div>
+
+  <div class="main-content">
+    
+    <!-- VISTA: RECEPCIÓN / FICHAS -->
+    <div id="view-recepcion" class="view active-view">
+      <div class="panel">
+        <h2>Ingresar Datos (Paciente y Cita)</h2>
+        <form id="fichaForm">
+          <!-- Datos Paciente -->
+          <div class="row">
+            <div class="form-group">
+              <label>Nombres:</label>
+              <input type="text" id="nombre" required>
+            </div>
+            <div class="form-group">
+              <label>Apellidos:</label>
+              <input type="text" id="apellidos" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group">
+              <label>Nro. Documento (CI):</label>
+              <input type="text" id="nroDoc" required placeholder="Ej. 1234567">
+            </div>
+            <div class="form-group">
+              <label>Edad:</label>
+              <input type="number" id="edad" required min="0" max="120">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="text" id="telefono" required>
+          </div>
+          
+          <!-- Datos Cita -->
+          <h2 style="margin-top: 30px;">Datos de la Cita</h2>
+          <div class="row">
+            <div class="form-group">
+              <label>Nivel de Gravedad:</label>
+              <select id="gravedad" required></select>
+            </div>
+            <div class="form-group">
+              <label>Especialidad:</label>
+              <select id="especialidad" required></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Profesional Asignado:</label>
+            <input type="text" id="profesional" readonly style="background-color: #f8f9fa; cursor: not-allowed; font-weight: bold; color: var(--primary);">
+          </div>
+          
+          <button type="submit" class="btn-primary">Registrar y Generar Ficha</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- VISTA: CONSULTORIO / ATENDER -->
+    <div id="view-consultorio" class="view">
+      <div class="panel" style="max-width: 1000px;">
+        <h2>Sala de Espera - Cola de Atención</h2>
+        <div class="controls">
+          <button id="btnAtender" class="btn-success">Llamar Siguiente Paciente</button>
+          <button id="btnCancelar" class="btn-danger">Cancelar Siguiente Ficha</button>
+        </div>
+        
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Ficha</th>
+                <th>Paciente</th>
+                <th>Edad</th>
+                <th>Especialidad</th>
+                <th>Prof. Asignado</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaCola">
+              <!-- Dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISTA: HISTORIAL / PILA LIFO -->
+    <div id="view-historial" class="view">
+      <div class="panel" style="max-width: 1000px;">
+        <h2>Historial de Atenciones (Pila LIFO)</h2>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Ficha</th>
+                <th>Paciente</th>
+                <th>Tipo de Servicio</th>
+              </tr>
+            </thead>
+            <tbody id="tablaHistorial">
+              <!-- Dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISTA: DIRECTORIO / SKIPLIST -->
+    <div id="view-pacientes" class="view">
+      <div class="panel" style="max-width: 1000px;">
+        <h2>Directorio de Pacientes (SkipList)</h2>
+        
+        <div class="controls" style="justify-content: flex-start; align-items: center;">
+          <input type="text" id="buscadorSkipList" placeholder="Ingrese CI a buscar (O(log n))" style="max-width: 300px; margin-bottom: 0;">
+          <button id="btnBuscarSkipList" class="btn-success">Buscar Paciente</button>
+          <button id="btnLimpiarBusqueda" class="btn-danger" style="display: none;">Limpiar Búsqueda</button>
+        </div>
+
+        <div id="resultadoBusqueda" style="display: none; background: #e8f5e9; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); margin-bottom: 20px;">
+          <h3 style="margin-top: 0; color: var(--primary);">¡Encontrado en O(log n)!</h3>
+          <p><strong>Nro Documento:</strong> <span id="resDoc"></span></p>
+          <p><strong>Nombre Completo:</strong> <span id="resNombre"></span></p>
+          <p><strong>Edad:</strong> <span id="resEdad"></span></p>
+          <p><strong>Teléfono:</strong> <span id="resTel"></span></p>
+        </div>
+
+        <div id="contenedorTablaPacientes" style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Nro Documento</th>
+                <th>Nombre Completo</th>
+                <th>Edad</th>
+                <th>Teléfono</th>
+              </tr>
+            </thead>
+            <tbody id="tablaPacientes">
+              <!-- Dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../dist/renderer.js"></script>
+</body>
+</html>

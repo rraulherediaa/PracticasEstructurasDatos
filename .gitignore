@@ -1,0 +1,14 @@
+# Ignorar carpetas del asistente de Inteligencia Artificial
+.agents/
+.gemini/
+
+# Ignorar dependencias de Node.js (pesan muchísimo)
+sistema/node_modules/
+node_modules/
+
+# Ignorar código compilado (se genera automáticamente)
+sistema/dist/
+
+# Ignorar la base de datos local para no subir datos privados al repositorio
+data.json
+sistema/data.json

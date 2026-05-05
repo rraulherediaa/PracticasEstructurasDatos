@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Visor de Sala de Espera</title>
+  <style>
+    :root {
+      --bg: #EDF1D6;
+      --text: #2d3436;
+      --primary: #609966;
+      --highlight: #e74c3c;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      justify-content: center;
+      align-items: center;
+    }
+    .header {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .ticket-container {
+      background-color: white;
+      padding: 50px 100px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+      min-width: 60%;
+    }
+    .ticket-number {
+      font-size: 8rem;
+      font-weight: 900;
+      color: var(--highlight);
+      margin: 0;
+      line-height: 1;
+    }
+    .consultorio-number {
+      font-size: 3.5rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 20px;
+    }
+    
+    @keyframes blink {
+      0% { background-color: var(--bg); }
+      50% { background-color: #9DC08B; }
+      100% { background-color: var(--bg); }
+    }
+    .blinking {
+      animation: blink 1s 3;
+    }
+  </style>
+</head>
+<body id="visorBody">
+
+  <div class="header">
+    PACIENTE LLAMADO
+  </div>
+
+  <div class="ticket-container" id="ticketContainer">
+    <div class="ticket-number" id="ticketDisplay">--</div>
+    <div class="consultorio-number" id="consultorioDisplay">Esperando llamado...</div>
+  </div>
+
+  <script src="../dist/visor-renderer.js"></script>
+</body>
+</html>

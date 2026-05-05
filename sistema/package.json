@@ -1,0 +1,15 @@
+{
+  "name": "sistema-hospital",
+  "version": "1.0.0",
+  "author": "Raúl Heredia",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && electron ."
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "electron": "^29.1.0",
+    "typescript": "^5.4.0"
+  }
+}
