@@ -1,267 +1,240 @@
-# Diagramas Mermaid - Lista Simple con Recursividad
+# Diagramas Mermaid - Hashing y Diccionarios
 
-## Diagrama de Clases UML
+## 1. Estructura de la Tabla Hash
+
+```mermaid
+graph TB
+    subgraph "Tabla Hash - Tamaño 10"
+        B0[Bucket 0] --> V0[(vacío)]
+        B1[Bucket 1] --> N1[Nodo: ID=202301]
+        N1 --> N2[Nodo: ID=202311]
+        N2 --> NULL1[null]
+        
+        B2[Bucket 2] --> N3[Nodo: ID=202302]
+        N3 --> NULL2[null]
+        
+        B3[Bucket 3] --> V1[(vacío)]
+        B4[Bucket 4] --> V2[(vacío)]
+        
+        B5[Bucket 5] --> N4[Nodo: ID=202305]
+        N4 --> N5[Nodo: ID=202315]
+        N5 --> NULL3[null]
+        
+        B6[Bucket 6] --> V3[(vacío)]
+        B7[Bucket 7] --> V4[(vacío)]
+        B8[Bucket 8] --> V5[(vacío)]
+        B9[Bucket 9] --> V6[(vacío)]
+    end
+    
+    style B1 fill:#ff9999
+    style B2 fill:#99ff99
+    style B5 fill:#9999ff
+```
+
+## 2. Funcionamiento de la Función Hash
+
+```mermaid
+flowchart LR
+    subgraph "Proceso de Hashing"
+        A[ID Estudiante] --> B{Función Hash}
+        B -->|id % 10| C[Índice Bucket]
+        C --> D[Almacenar/Recuperar]
+    end
+    
+    subgraph "Ejemplos"
+        E[202301] -->|202301 % 10 = 1| F[Bucket 1]
+        G[202302] -->|202302 % 10 = 2| H[Bucket 2]
+        I[202305] -->|202305 % 10 = 5| J[Bucket 5]
+        K[202315] -->|202315 % 10 = 5| L[Bucket 5]
+    end
+```
+
+## 3. Resolución de Colisiones - Encadenamiento
+
+```mermaid
+sequenceDiagram
+    participant U as Usuario
+    participant T as TablaHash
+    participant B5 as Bucket 5
+    participant N1 as Nodo 202305
+    participant N2 as Nodo 202315
+    
+    U->>T: put(202305, Carlos)
+    T->>T: hash(202305) = 5
+    T->>B5: ¿Está vacío?
+    B5-->>T: Sí
+    T->>B5: Crear nodo 202305
+    
+    U->>T: put(202315, María)
+    T->>T: hash(202315) = 5
+    T->>B5: ¿Está vacío?
+    B5-->>T: No, contiene 202305
+    T->>N1: Encadenar 202315
+    N1->>N2: siguiente = nuevo nodo
+```
+
+## 4. Flujo de Operaciones
+
+```mermaid
+flowchart TD
+    subgraph "Operaciones Tabla Hash"
+        Start([Inicio]) --> Op{Operación}
+        
+        Op -->|Insertar| Insert[Calcular Hash]
+        Insert --> Insert2[Ir al Bucket]
+        Insert2 --> Insert3{Bucket vacío?}
+        Insert3 -->|Sí| Insert4[Crear nodo]
+        Insert3 -->|No| Insert5[Encadenar al final]
+        Insert4 --> End1([Fin])
+        Insert5 --> End1
+        
+        Op -->|Buscar| Search[Calcular Hash]
+        Search --> Search2[Ir al Bucket]
+        Search2 --> Search3{Encontrado?}
+        Search3 -->|Sí| Search4[Retornar dato]
+        Search3 -->|No| Search5[Recorrer lista]
+        Search5 --> Search6{Encontrado?}
+        Search6 -->|Sí| Search4
+        Search6 -->|No| Search7[Retornar null]
+        Search4 --> End2([Fin])
+        Search7 --> End2
+        
+        Op -->|Eliminar| Delete[Calcular Hash]
+        Delete --> Delete2[Buscar en Bucket]
+        Delete2 --> Delete3{Encontrado?}
+        Delete3 -->|Sí| Delete4[Desenlazar nodo]
+        Delete3 -->|No| Delete5[Retornar false]
+        Delete4 --> Delete6[Retornar true]
+        Delete6 --> End3([Fin])
+        Delete5 --> End3
+    end
+```
+
+## 5. Diagrama de Clases UML
 
 ```mermaid
 classDiagram
-    class Playlist {
-        -NodoCancion cabeza
-        +Playlist()
-        +void mostrarCancionesRecursivo()
-        +void mostrarCancionesInversoRecursivo()
-        +void agregarCancionRecursivo(String titulo, String artista, int duracion)
-        -void mostrarCancionesRecursivoAux(NodoCancion actual, int indice)
-        -void mostrarCancionesInversoRecursivoAux(NodoCancion actual, int indice)
-        -NodoCancion agregarCancionRecursivoAux(NodoCancion actual, String titulo, String artista, int duracion)
+    class Estudiante {
+        -int id
+        -String nombre
+        -String carrera
+        -double promedio
+        +Estudiante(int, String, String, double)
+        +getId() int
+        +getNombre() String
+        +getCarrera() String
+        +getPromedio() double
+        +toString() String
     }
     
-    class NodoCancion {
-        -String titulo
-        -String artista
-        -int duracion
-        -NodoCancion siguiente
-        +NodoCancion(String titulo, String artista, int duracion)
-        +String toString()
+    class NodoHash {
+        -Estudiante estudiante
+        -NodoHash siguiente
+        +NodoHash(Estudiante)
+        +getEstudiante() Estudiante
+        +getSiguiente() NodoHash
+        +setSiguiente(NodoHash)
     }
     
-    Playlist --> NodoCancion : contains
+    class TablaHash {
+        -NodoHash[] tabla
+        -int tamaño
+        -int elementos
+        +TablaHash(int)
+        +funcionHash(int) int
+        +put(int, Estudiante) void
+        +get(int) Estudiante
+        +remove(int) boolean
+        +containsKey(int) boolean
+        +size() int
+        +mostrarTabla() void
+    }
+    
+    NodoHash --> Estudiante : contiene
+    NodoHash --> NodoHash : siguiente
+    TablaHash --> NodoHash : tabla[]
 ```
 
-## Estructura de Lista Simple
+## 6. Comparación de Estructuras
 
 ```mermaid
 graph LR
-    A[Cabeza] --> B[Canción 1]
-    B --> C[Canción 2]
-    C --> D[Canción 3]
-    D --> E[null]
-    
-    style A fill:#e1f5ff
-    style B fill:#fff4e6
-    style C fill:#fff4e6
-    style D fill:#fff4e6
-    style E fill:#f0f0f0
-```
-
-## Diagrama de Flujo - Mostrar Recursivo (Orden Normal)
-
-```mermaid
-flowchart TD
-    A[Inicio: mostrarCancionesRecursivo] --> B[Llamar a mostrarCancionesRecursivoAux con cabeza]
-    B --> C{¿actual == null?}
-    C -->|Sí| D[Imprimir Fin de la playlist]
-    C -->|No| E[Imprimir canción actual con índice]
-    E --> F[Llamada recursiva: mostrarCancionesRecursivoAux actual.siguiente, indice+1]
-    F --> C
-    D --> G[Fin]
-```
-
-## Diagrama de Flujo - Mostrar Recursivo (Orden Inverso)
-
-```mermaid
-flowchart TD
-    A[Inicio: mostrarCancionesInversoRecursivo] --> B[Obtener total de canciones]
-    B --> C[Llamar a mostrarCancionesInversoRecursivoAux con cabeza y total]
-    C --> D{¿actual == null?}
-    D -->|Sí| E[Retornar sin imprimir]
-    D -->|No| F[Llamada recursiva: mostrarCancionesInversoRecursivoAux actual.siguiente, indice-1]
-    F --> G[Imprimir canción actual con índice]
-    G --> D
-    E --> H[Fin]
-```
-
-## Diagrama de Secuencia - Mostrar Recursivo
-
-```mermaid
-sequenceDiagram
-    participant Main
-    participant Playlist
-    participant Aux1
-    participant Aux2
-    participant Aux3
-    participant Aux4
-    
-    Main->>Playlist: mostrarCancionesRecursivo()
-    Playlist->>Aux1: mostrarCancionesRecursivoAux(Cancion1, 1)
-    Aux1->>Aux1: Imprimir "1. Bohemian Rhapsody"
-    Aux1->>Aux2: mostrarCancionesRecursivoAux(Cancion2, 2)
-    Aux2->>Aux2: Imprimir "2. Stairway to Heaven"
-    Aux2->>Aux3: mostrarCancionesRecursivoAux(Cancion3, 3)
-    Aux3->>Aux3: Imprimir "3. Hotel California"
-    Aux3->>Aux4: mostrarCancionesRecursivoAux(Cancion4, 4)
-    Aux4->>Aux4: Imprimir "4. Sweet Child O' Mine"
-    Aux4->>Playlist: mostrarCancionesRecursivoAux(Cancion5, 5)
-    Playlist->>Playlist: Imprimir "5. Smells Like Teen Spirit"
-    Playlist->>Playlist: mostrarCancionesRecursivoAux(null, 6)
-    Playlist->>Playlist: Caso base: null
-    Playlist-->>Main: Fin de la playlist
-```
-
-## Diagrama de Flujo - Insertar al Final (Recursivo)
-
-```mermaid
-flowchart TD
-    A[Inicio: agregarCancionRecursivo] --> B[Llamar a agregarCancionRecursivoAux con cabeza]
-    B --> C{¿actual == null?}
-    C -->|Sí| D[Crear nuevo NodoCancion]
-    C -->|No| E[Llamada recursiva: agregarCancionRecursivoAux actual.siguiente]
-    E --> F[actual.siguiente = resultado recursivo]
-    F --> G[Retornar actual]
-    D --> H[Retornar nuevo nodo]
-    G --> I[cabeza = resultado]
-    H --> I
-    I --> J[Fin]
-```
-
-## Diagrama de Secuencia - Insertar al Final (Recursivo)
-
-```mermaid
-sequenceDiagram
-    participant Main
-    participant Playlist
-    participant Aux1
-    participant Aux2
-    participant Aux3
-    participant Aux4
-    
-    Main->>Playlist: agregarCancionRecursivo("Hotel California", "Eagles", 390)
-    Playlist->>Aux1: agregarCancionRecursivoAux(Cancion1, ...)
-    Aux1->>Aux2: agregarCancionRecursivoAux(Cancion2, ...)
-    Aux2->>Aux3: agregarCancionRecursivoAux(Cancion3, ...)
-    Aux3->>Aux4: agregarCancionRecursivoAux(null, ...)
-    Aux4->>Aux4: Caso base: null
-    Aux4->>Aux4: Crear NodoCancion("Hotel California")
-    Aux4-->>Aux3: Retornar nuevo nodo
-    Aux3->>Aux3: Cancion3.siguiente = nuevo nodo
-    Aux3-->>Aux2: Retornar Cancion3
-    Aux2->>Aux2: Cancion2.siguiente = Cancion3
-    Aux2-->>Aux1: Retornar Cancion2
-    Aux1->>Aux1: Cancion1.siguiente = Cancion2
-    Aux1-->>Playlist: Retornar Cancion1
-    Playlist->>Playlist: cabeza = Cancion1
-    Playlist-->>Main: Canción agregada
-```
-
-## Evolución de la Lista durante Inserciones
-
-```mermaid
-graph LR
-    subgraph "Estado Inicial"
-        I0[cabeza → null]
+    subgraph "Búsqueda de Elemento"
+        direction TB
+        
+        subgraph "Lista"
+            L1[Nodo 1] --> L2[Nodo 2] --> L3[Nodo 3] --> L4[Nodo 4]
+            L4 --> L5[...] --> L6[Nodo n]
+            style L4 fill:#ff6666
+        end
+        
+        subgraph "Árbol Binario"
+            A1[Nodo Raíz] --> A2[Nodo Izq]
+            A1 --> A3[Nodo Der]
+            A2 --> A4[Nodo]
+            A3 --> A5[Nodo]
+            style A3 fill:#66ff66
+        end
+        
+        subgraph "Tabla Hash"
+            H1[Índice Hash] --> H2[Bucket]
+            H2 --> H3[Dato]
+            style H2 fill:#6666ff
+        end
     end
     
-    subgraph "Insertar Canción 1"
-        S1[cabeza → Canción1 → null]
-    end
-    
-    subgraph "Insertar Canción 2"
-        S2[cabeza → Canción1 → Canción2 → null]
-    end
-    
-    subgraph "Insertar Canción 3"
-        S3[cabeza → Canción1 → Canción2 → Canción3 → null]
-    end
-    
-    I0 --> S1
-    S1 --> S2
-    S2 --> S3
-    
-    style I0 fill:#fff4e6
-    style S1 fill:#e6f7ff
-    style S2 fill:#e6ffe6
-    style S3 fill:#ffe6e6
+    ListaNote[O(n)] --> L4
+    ArbolNote[O(log n)] --> A3
+    HashNote[O(1)] --> H2
 ```
 
-## Comparación: Recursivo vs Iterativo
+## 7. Evolución del Factor de Carga
 
 ```mermaid
-graph TB
-    subgraph "Enfoque Recursivo"
-        R1[Código elegante]
-        R2[Usa pila de llamadas]
-        R3[Fácil de entender]
-        R4[Riesgo de stack overflow]
-    end
+xychart-beta
+    title "Factor de Carga vs Rendimiento"
+    x-axis [0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
+    y-axis "Colisiones Promedio" 0 --> 5
+    line [0, 0.1, 0.3, 0.7, 1.5, 3.0, 5.0]
     
-    subgraph "Enfoque Iterativo"
-        I1[Código explícito]
-        I2[Usa bucles]
-        I3[Más eficiente]
-        I4[Sin riesgo de stack overflow]
-    end
-    
-    style R1 fill:#90EE90
-    style R2 fill:#FFB6C1
-    style R3 fill:#90EE90
-    style R4 fill:#FFB6C1
-    style I1 fill:#87CEEB
-    style I2 fill:#87CEEB
-    style I3 fill:#90EE90
-    style I4 fill:#90EE90
+    annotation "Óptimo" at 0.5, 0.3
+    annotation "Redimensionar" at 0.75, 0.7
 ```
 
-## Analogía Visual: Cadena de Personas
+## 8. Caso de Estudio - Registro Académico
 
 ```mermaid
-graph LR
-    subgraph "Cadena de Personas"
-        P1[Persona 1<br/>Cabeza] --> P2[Persona 2]
-        P2 --> P3[Persona 3]
-        P3 --> P4[Persona 4]
-        P4 --> P5[null<br/>Nadie]
+flowchart TB
+    subgraph "Sistema de Estudiantes"
+        A[Menú Principal] --> B{Opción}
+        
+        B -->|1| C[Registrar Estudiante]
+        C --> D[Ingresar Datos]
+        D --> E[Calcular Hash]
+        E --> F[Guardar en Tabla]
+        
+        B -->|2| G[Buscar Estudiante]
+        G --> H[Ingresar ID]
+        H --> I[Calcular Hash]
+        I --> J[Recuperar Datos]
+        
+        B -->|3| K[Actualizar Datos]
+        K --> L[Buscar por ID]
+        L --> M[Modificar Registro]
+        
+        B -->|4| N[Eliminar Estudiante]
+        N --> O[Buscar por ID]
+        O --> P[Remover de Tabla]
+        
+        B -->|5| Q[Mostrar Reporte]
+        Q --> R[Recorrer Tabla]
+        R --> S[Imprimir Estadísticas]
+        
+        F --> T([Volver])
+        J --> T
+        M --> T
+        P --> T
+        S --> T
+        T --> A
     end
-    
-    style P1 fill:#FFD700
-    style P2 fill:#C0C0C0
-    style P3 fill:#C0C0C0
-    style P4 fill:#C0C0C0
-    style P5 fill:#808080
-```
-
-## Pila de Recursión - Mostrar Canciones
-
-```mermaid
-graph TB
-    subgraph "Pila de Llamadas"
-        Nivel4["Nivel 4: mostrarCancionesRecursivoAux(null, 5)<br/>CASO BASE: null → Retorna"]
-        Nivel3["Nivel 3: mostrarCancionesRecursivoAux(Cancion4, 4)<br/>Imprime Cancion4"]
-        Nivel2["Nivel 2: mostrarCancionesRecursivoAux(Cancion3, 3)<br/>Imprime Cancion3"]
-        Nivel1["Nivel 1: mostrarCancionesRecursivoAux(Cancion2, 2)<br/>Imprime Cancion2"]
-        Nivel0["Nivel 0: mostrarCancionesRecursivoAux(Cancion1, 1)<br/>Imprime Cancion1"]
-    end
-    
-    Nivel0 --> Nivel1
-    Nivel1 --> Nivel2
-    Nivel2 --> Nivel3
-    Nivel3 --> Nivel4
-    
-    style Nivel0 fill:#e6f7ff
-    style Nivel1 fill:#e6f7ff
-    style Nivel2 fill:#e6f7ff
-    style Nivel3 fill:#e6f7ff
-    style Nivel4 fill:#ffe6e6
-```
-
-## Pila de Recursión - Insertar al Final
-
-```mermaid
-graph TB
-    subgraph "Pila de Llamadas"
-        Nivel4["Nivel 4: agregarCancionRecursivoAux(null, ...)<br/>CASO BASE: null → Crea nuevo nodo"]
-        Nivel3["Nivel 3: agregarCancionRecursivoAux(Cancion4, ...)<br/>Cancion4.siguiente = nuevo nodo"]
-        Nivel2["Nivel 2: agregarCancionRecursivoAux(Cancion3, ...)<br/>Cancion3.siguiente = Cancion4"]
-        Nivel1["Nivel 1: agregarCancionRecursivoAux(Cancion2, ...)<br/>Cancion2.siguiente = Cancion3"]
-        Nivel0["Nivel 0: agregarCancionRecursivoAux(Cancion1, ...)<br/>Cancion1.siguiente = Cancion2"]
-    end
-    
-    Nivel0 --> Nivel1
-    Nivel1 --> Nivel2
-    Nivel2 --> Nivel3
-    Nivel3 --> Nivel4
-    
-    style Nivel0 fill:#e6f7ff
-    style Nivel1 fill:#e6f7ff
-    style Nivel2 fill:#e6f7ff
-    style Nivel3 fill:#e6f7ff
-    style Nivel4 fill:#ffe6e6
 ```

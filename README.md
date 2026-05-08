@@ -1,177 +1,216 @@
-# Lista Simple con Recursividad - Playlist de Canciones
+# Hashing y Diccionarios - Sistema de Gestión de Estudiantes
 
 **Materia:** Estructura de Datos I  
-**Implementación:** Lista Simple Enlazada con Recursividad en Java  
-**Aplicación:** Playlist de Música
+**Implementación:** Tabla Hash con Encadenamiento en Java  
+**Aplicación:** Sistema de Registro de Estudiantes
 
 ## Descripción
-Una lista simple enlazada es una estructura de datos lineal donde cada elemento (nodo) contiene un dato y una referencia al siguiente nodo. En esta implementación, utilizamos **recursividad** para las operaciones de visualización e inserción al final, demostrando cómo las técnicas recursivas pueden simplificar el código y hacerlo más elegante.
 
-## ¿Qué es una Lista Simple?
-Una lista simple enlazada es una colección de nodos donde:
-- Cada nodo contiene datos y un puntero al siguiente nodo
-- El primer nodo se llama "cabeza" (head)
-- El último nodo apunta a null
-- Solo se puede recorrer en una dirección (hacia adelante)
+El **hashing** es una técnica que permite almacenar y recuperar datos de forma eficiente mediante una función hash que convierte una clave en un índice de tabla. Los **diccionarios** (o mapas) utilizan hashing para implementar operaciones de búsqueda, inserción y eliminación en tiempo promedio O(1).
+
+Esta implementación utiliza **encadenamiento separado** para resolver colisiones, donde cada bucket de la tabla hash apunta a una lista de elementos que comparten el mismo índice hash.
+
+## ¿Qué es una Tabla Hash?
+
+Una tabla hash es una estructura de datos que:
+- Almacena pares **clave-valor**
+- Usa una **función hash** para calcular el índice donde se almacenará el dato
+- Permite acceso directo a los elementos mediante su clave
+- Resuelve **colisiones** cuando dos claves generan el mismo índice
 
 ### Características principales:
-- **Acceso secuencial:** O(n) para acceder a un elemento específico
-- **Inserción eficiente:** O(1) al inicio, O(n) al final
-- **Eliminación eficiente:** O(n) en general
-- **Memoria dinámica:** Crece según sea necesario
-- **Recursividad:** Simplifica operaciones complejas
+
+- **Acceso directo:** O(1) promedio para búsqueda, inserción y eliminación
+- **Función hash:** Convierte la clave en un índice numérico
+- **Colisiones:** Ocurren cuando dos claves tienen el mismo hash
+- **Resolución de colisiones:** Encadenamiento o direccionamiento abierto
+- **Factor de carga:** Controla cuándo redimensionar la tabla
 
 ### Analogía
-Imagina una cadena de personas donde cada persona sostiene la mano de la siguiente:
-- **Primera persona:** Cabeza de la lista
-- **Cada persona:** Un nodo con información
-- **Mano sostenida:** Puntero al siguiente
-- **Última persona:** No sostiene a nadie (apunta a null)
 
-Para encontrar a alguien, debes seguir la cadena desde el principio.
+Imagina un **sistema de casilleros** en una universidad:
 
-### Aplicación en Playlist
-En una playlist de música, la lista simple permite:
-- **Canciones ordenadas:** En orden de adición a la playlist
-- **Recursivo:** Mostrar playlist de forma elegante
-- **Inserción al final:** Agregar nuevas canciones al final
-- **Recorrido inverso:** Mostrar canciones de la más reciente a la más antigua
+- **Número de estudiante:** La clave única
+- **Función hash:** El algoritmo que asigna casillero según el número
+- **Casillero:** El bucket donde se guarda la información
+- **Colisión:** Dos estudiantes asignados al mismo casillero
+- **Lista de espera:** Encadenamiento para manejar colisiones
+
+### Aplicación en Sistema de Estudiantes
+
+En un sistema de registro académico, la tabla hash permite:
+
+- **Matrícula rápida:** Registrar estudiantes en O(1)
+- **Búsqueda inmediata:** Encontrar datos por ID de estudiante
+- **Gestión eficiente:** Actualizar calificaciones y datos personales
+- **Prevención de duplicados:** Detectar IDs duplicados instantáneamente
 
 ### Otras Aplicaciones
-- Sistemas de colas de impresión
-- Gestión de historiales de navegación
-- Implementación de pilas y colas
-- Gestión de listas de tareas
+
+- **Bases de datos:** Índices hash para búsqueda rápida
+- **Cachés de sistemas:** Almacenamiento temporal de datos frecuentes
+- **Compiladores:** Tablas de símbolos para identificadores
+- **Sistemas de archivos:** Asignación de bloques de disco
+- **Criptografía:** Verificación de integridad de datos
 
 ## Requisitos Previos
+
 - **Java JDK 11 o superior**
 - **IDE:** IntelliJ IDEA, Eclipse, VS Code, o cualquier editor compatible con Java
 - **Sistema Operativo:** Windows, Linux, macOS
 
 ## Estructura del Proyecto
+
 ```
 Practicas/
 ├── README.md                    # Documentación completa
 ├── MERMAID.md                   # Diagramas Mermaid
-└── ListaSimpleRecursiva.java    # Implementación con recursividad
+└── HashingDiccionario.java      # Implementación de tabla hash
 ```
 
 ## Uso
 
 ### Compilación
 ```bash
-javac ListaSimpleRecursiva.java
+javac HashingDiccionario.java
 ```
 
 ### Ejecución
 ```bash
-java ListaSimpleRecursiva
+java HashingDiccionario
 ```
 
 ## Estructura de Datos con POO
 
 ### Clases Principales
 
-#### 1. NodoCancion
-Nodo de la lista que representa una canción:
-- **titulo:** Título de la canción
-- **artista:** Artista o banda
-- **duracion:** Duración en segundos
-- **siguiente:** Referencia a la siguiente canción en la lista
+#### 1. Estudiante
+Clase que representa un estudiante:
+- **id:** Identificador único (clave)
+- **nombre:** Nombre completo
+- **carrera:** Carrera universitaria
+- **promedio:** Promedio académico
 
-#### 2. Playlist
-Clase principal que implementa la lista:
-- **cabeza:** Primera canción de la playlist
-- **métodos recursivos:** Para mostrar e insertar
+#### 2. NodoHash
+Nodo para el encadenamiento:
+- **estudiante:** Dato almacenado
+- **siguiente:** Referencia al siguiente nodo (colisión)
 
-### Operaciones Principales con Recursividad
+#### 3. TablaHash
+Clase principal que implementa el diccionario:
+- **tabla:** Array de buckets
+- **tamaño:** Capacidad de la tabla
+- **elementos:** Cantidad de elementos almacenados
+- **función hash:** Método de dispersión
 
-#### 1. Mostrar Canciones (Recursivo - Orden Normal)
-- Caso base: Si el nodo es null, termina
-- Caso recursivo: Imprime el nodo actual y llama recursivamente al siguiente
-- **Complejidad:** O(n)
-- **En playlist:** Muestra canciones de la primera a la última
+### Operaciones Principales
 
-#### 2. Mostrar Canciones (Recursivo - Orden Inverso)
-- Caso base: Si el nodo es null, termina
-- Caso recursivo: Llama recursivamente al siguiente, luego imprime al regresar
-- **Complejidad:** O(n)
-- **En playlist:** Muestra canciones de la última a la primera
-
-#### 3. Insertar al Final (Recursivo)
-- Caso base: Si el nodo es null, crea nuevo nodo
-- Caso recursivo: Avanza al siguiente nodo hasta encontrar null
-- **Complejidad:** O(n)
-- **En playlist:** Agrega nueva canción al final de la playlist
-
-## Casos de Uso - Playlist de Canciones
-
-### 1. Mostrar Playlist (Recursivo)
+#### 1. Función Hash
 ```java
-Playlist playlist = new Playlist();
-playlist.agregarCancionRecursivo("Bohemian Rhapsody", "Queen", 354);
-playlist.agregarCancionRecursivo("Stairway to Heaven", "Led Zeppelin", 482);
+hash(id) = id % tamañoTabla
+```
+- Convierte el ID en un índice válido
+- Distribuye elementos uniformemente
+- **Complejidad:** O(1)
 
-playlist.mostrarCancionesRecursivo();
-// Salida:
-// 🎵 Playlist (Orden Normal):
-//    1. "Bohemian Rhapsody" - Queen (5:54)
-//    2. "Stairway to Heaven" - Led Zeppelin (8:02)
+#### 2. Insertar (Put)
+- Calcula índice con función hash
+- Crea nuevo nodo en el bucket correspondiente
+- Maneja colisiones con encadenamiento
+- **Complejidad:** O(1) promedio, O(n) peor caso
+
+#### 3. Buscar (Get)
+- Calcula índice con función hash
+- Recorre lista enlazada del bucket
+- Retorna el estudiante encontrado
+- **Complejidad:** O(1) promedio, O(n) peor caso
+
+#### 4. Eliminar (Remove)
+- Calcula índice con función hash
+- Busca y desenlaza el nodo
+- **Complejidad:** O(1) promedio, O(n) peor caso
+
+#### 5. Contiene (ContainsKey)
+- Verifica si una clave existe
+- **Complejidad:** O(1) promedio
+
+## Casos de Uso - Sistema de Estudiantes
+
+### 1. Registrar Estudiante
+```java
+TablaHash registro = new TablaHash(10);
+registro.put(202301, new Estudiante(202301, "Ana García", "Ingeniería", 8.5));
+registro.put(202302, new Estudiante(202302, "Luis Martínez", "Medicina", 9.2));
+// Hash asigna automáticamente el bucket
 ```
 
-### 2. Mostrar Playlist en Orden Inverso
+### 2. Buscar Estudiante
 ```java
-playlist.mostrarCancionesInversoRecursivo();
-// Salida:
-// 🎵 Playlist (Orden Inverso):
-//    2. "Stairway to Heaven" - Led Zeppelin (8:02)
-//    1. "Bohemian Rhapsody" - Queen (5:54)
+Estudiante e = registro.get(202301);
+// Salida: Ana García - Ingeniería - Promedio: 8.5
 ```
 
-### 3. Insertar Canción al Final (Recursivo)
+### 3. Verificar Existencia
 ```java
-playlist.agregarCancionRecursivo("Hotel California", "Eagles", 390);
-// La canción se agrega al final de la playlist
+boolean existe = registro.containsKey(202301);
+// Salida: true
+```
+
+### 4. Manejo de Colisiones
+```java
+// Si dos IDs generan el mismo hash:
+registro.put(202305, new Estudiante(202305, "Carlos López", "Derecho", 8.0));
+registro.put(202315, new Estudiante(202315, "María Soto", "Arquitectura", 9.0));
+// Ambos se almacenan en el mismo bucket como lista enlazada
 ```
 
 ## Ejemplo de Ejecución
 
 ```
 ========================================
-  LISTAS SIMPLES CON RECURSIVIDAD
-  Playlist de Canciones
+  HASHING Y DICCIONARIOS
+  Sistema de Registro de Estudiantes
 ========================================
 
---- AGREGANDO CANCIONES AL FINAL (RECURSIVO) ---
-🎶 Agregando: "Bohemian Rhapsody" de Queen
-🎶 Agregando: "Stairway to Heaven" de Led Zeppelin
-🎶 Agregando: "Hotel California" de Eagles
-🎶 Agregando: "Sweet Child O' Mine" de Guns N' Roses
-🎶 Agregando: "Smells Like Teen Spirit" de Nirvana
+--- FUNCIÓN HASH ---
+📐 Fórmula: hash(id) = id % 10
+   Ejemplo: hash(202301) = 202301 % 10 = 1
 
-🎵 Playlist (Orden Normal):
-   1. "Bohemian Rhapsody" - Queen (5:54)
-   2. "Stairway to Heaven" - Led Zeppelin (8:02)
-   3. "Hotel California" - Eagles (6:30)
-   4. "Sweet Child O' Mine" - Guns N' Roses (5:56)
-   5. "Smells Like Teen Spirit" - Nirvana (5:01)
-   Fin de la playlist
+--- INSERTANDO ESTUDIANTES ---
+📝 Insertando: ID=202301, Ana García, Ingeniería, Promedio=8.5
+   → Hash: 1, Bucket[1] (0 colisiones)
 
-🎵 Playlist (Iterativo):
-   1. "Bohemian Rhapsody" - Queen (5:54)
-   2. "Stairway to Heaven" - Led Zeppelin (8:02)
-   3. "Hotel California" - Eagles (6:30)
-   4. "Sweet Child O' Mine" - Guns N' Roses (5:56)
-   5. "Smells Like Teen Spirit" - Nirvana (5:01)
-   Fin de la playlist
+📝 Insertando: ID=202302, Luis Martínez, Medicina, Promedio=9.2
+   → Hash: 2, Bucket[2] (0 colisiones)
 
---- MOSTRAR EN ORDEN INVERSO (RECURSIVO) ---
-🎵 Playlist (Orden Inverso):
-   5. "Smells Like Teen Spirit" - Nirvana (5:01)
-   4. "Sweet Child O' Mine" - Guns N' Roses (5:56)
-   3. "Hotel California" - Eagles (6:30)
-   2. "Stairway to Heaven" - Led Zeppelin (8:02)
-   1. "Bohemian Rhapsody" - Queen (5:54)
+📝 Insertando: ID=202305, Carlos López, Derecho, Promedio=8.0
+   → Hash: 5, Bucket[5] (0 colisiones)
+
+📝 Insertando: ID=202315, María Soto, Arquitectura, Promedio=9.0
+   → Hash: 5, Bucket[5] (¡COLISIÓN! Encadenando...)
+
+📝 Insertando: ID=202311, Pedro Ruiz, Economía, Promedio=7.8
+   → Hash: 1, Bucket[1] (¡COLISIÓN! Encadenando...)
+
+--- ESTADO DE LA TABLA HASH ---
+📊 Factor de carga: 5/10 = 0.50
+
+Bucket[0]: (vacío)
+Bucket[1]: → 202301: Ana García → 202311: Pedro Ruiz
+Bucket[2]: → 202302: Luis Martínez
+Bucket[3]: (vacío)
+Bucket[4]: (vacío)
+Bucket[5]: → 202305: Carlos López → 202315: María Soto
+Bucket[6-9]: (vacíos)
+
+--- BÚSQUEDAS ---
+🔍 Buscando ID 202301: Ana García - Ingeniería - 8.5
+🔍 Buscando ID 202315: María Soto - Arquitectura - 9.0
+🔍 Buscando ID 202399: No encontrado
+
+--- VERIFICACIÓN ---
+✓ ID 202302 existe en el registro
+✗ ID 202399 no existe en el registro
 
 ========================================
   FIN DE LA DEMOSTRACIÓN
@@ -180,45 +219,64 @@ playlist.agregarCancionRecursivo("Hotel California", "Eagles", 390);
 
 ## Complejidad Temporal
 
-| Operación | Recursivo | Iterativo | Espacio |
-|-----------|-----------|-----------|---------|
-| Mostrar | O(n) | O(n) | O(n) pila |
-| Insertar Final | O(n) | O(n) | O(n) pila |
-| Insertar Inicio | O(1) | O(1) | O(1) |
-| Eliminar | O(n) | O(n) | O(n) |
+| Operación | Promedio | Peor Caso | Espacio |
+|-----------|----------|-----------|---------|
+| Insertar (put) | O(1) | O(n) | O(n) |
+| Buscar (get) | O(1) | O(n) | O(1) |
+| Eliminar (remove) | O(1) | O(n) | O(1) |
+| Contiene (containsKey) | O(1) | O(n) | O(1) |
+| Función Hash | O(1) | O(1) | O(1) |
 
-## Ventajas de Recursividad
+## Ventajas del Hashing
 
-1. **Elegancia:** Código más limpio y fácil de entender
-2. **Simplicidad:** Menos código para operaciones complejas
-3. **Natural:** Refleja la estructura de datos recursivamente
-4. **Mantenibilidad:** Más fácil de modificar y extender
+1. **Velocidad:** Acceso directo en tiempo constante
+2. **Eficiencia:** Ideal para búsquedas frecuentes
+3. **Flexibilidad:** Claves de cualquier tipo hashable
+4. **Escalabilidad:** Redimensionamiento dinámico
 
-## Desventajas de Recursividad
+## Desventajas del Hashing
 
-1. **Memoria:** Usa más memoria por la pila de llamadas
-2. **Rendimiento:** Puede ser más lento que iterativo
-3. **Stack Overflow:** Riesgo con listas muy largas
-4. **Depuración:** Más difícil de depurar
+1. **Colisiones:** Requieren estrategias de resolución
+2. **Desorden:** Los elementos no están ordenados
+3. **Memoria:** Puede desperdiciar espacio en buckets vacíos
+4. **Rendimiento:** Degradación con factor de carga alto
 
-## Comparación: Recursivo vs Iterativo
+## Comparación: Hashing vs Otras Estructuras
 
-| Aspecto | Recursivo | Iterativo |
-|---------|-----------|-----------|
-| Código | Más elegante | Más explícito |
-| Memoria | O(n) pila | O(1) |
-| Rendimiento | Más lento | Más rápido |
-| Legibilidad | Alta | Media |
-| Mantenimiento | Fácil | Medio |
+| Aspecto | Tabla Hash | Lista | Árbol Binario |
+|---------|------------|-------|---------------|
+| Búsqueda | O(1) | O(n) | O(log n) |
+| Inserción | O(1) | O(1)* | O(log n) |
+| Eliminación | O(1) | O(n) | O(log n) |
+| Orden | No | Sí | Sí |
+| Memoria | Más | Menos | Más |
+
+*Al inicio
+
+## Resolución de Colisiones
+
+### Encadenamiento (Usado en esta implementación)
+- Cada bucket es una lista enlazada
+- Múltiples elementos pueden coexistir
+- Simple de implementar
+- Memoria dinámica según necesidad
+
+### Direccionamiento Abierto
+- Busca siguiente bucket disponible
+- Variantes: Lineal, Cuadrático, Doble Hash
+- Mejor uso de memoria
+- Más complejo de implementar
 
 ## Referencias
-- Cormen, T. H., et al. "Introduction to Algorithms" - Capítulo sobre Listas Enlazadas
-- Sedgewick, R., Wayne, K. "Algorithms" - Sección sobre Recursión
-- https://en.wikipedia.org/wiki/Linked_list
-- https://en.wikipedia.org/wiki/Recursion_(computer_science)
+
+- Cormen, T. H., et al. "Introduction to Algorithms" - Capítulo sobre Tablas Hash
+- Sedgewick, R., Wayne, K. "Algorithms" - Sección sobre Hashing
+- https://en.wikipedia.org/wiki/Hash_table
+- https://en.wikipedia.org/wiki/Hash_function
 
 ## Créditos
+
 - **Implementación:** Java con Programación Orientada a Objetos
-- **Técnica:** Recursividad para operaciones de lista
-- **Caso de estudio:** Playlist de Canciones
+- **Técnica:** Hashing con Encadenamiento Separado
+- **Caso de estudio:** Sistema de Registro de Estudiantes
 - **Materia:** Estructura de Datos I
