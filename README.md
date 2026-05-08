@@ -1,57 +1,59 @@
-# Hashing y Diccionarios - Sistema de Gestión de Estudiantes
+# Grafos - Red de Conexiones de Ciudades
 
 **Materia:** Estructura de Datos I  
-**Implementación:** Tabla Hash con Encadenamiento en Java  
-**Aplicación:** Sistema de Registro de Estudiantes
+**Implementación:** Grafo No Dirigido Ponderado en Java  
+**Aplicación:** Red de Conexiones entre Ciudades
 
 ## Descripción
 
-El **hashing** es una técnica que permite almacenar y recuperar datos de forma eficiente mediante una función hash que convierte una clave en un índice de tabla. Los **diccionarios** (o mapas) utilizan hashing para implementar operaciones de búsqueda, inserción y eliminación en tiempo promedio O(1).
+Un **grafo** es una estructura de datos no lineal compuesta por un conjunto de **vértices** (nodos) y **aristas** (conexiones) que relacionan estos vértices. En esta implementación, utilizamos un **grafo no dirigido ponderado** para modelar una red de conexiones entre ciudades, donde cada arista tiene un peso que representa la distancia en kilómetros.
 
-Esta implementación utiliza **encadenamiento separado** para resolver colisiones, donde cada bucket de la tabla hash apunta a una lista de elementos que comparten el mismo índice hash.
+## ¿Qué es un Grafo?
 
-## ¿Qué es una Tabla Hash?
+Un grafo G = (V, E) consiste en:
+- **V:** Conjunto de vértices (nodos)
+- **E:** Conjunto de aristas (conexiones entre pares de vértices)
 
-Una tabla hash es una estructura de datos que:
-- Almacena pares **clave-valor**
-- Usa una **función hash** para calcular el índice donde se almacenará el dato
-- Permite acceso directo a los elementos mediante su clave
-- Resuelve **colisiones** cuando dos claves generan el mismo índice
+### Tipos de Grafos:
+
+- **Dirigido:** Las aristas tienen dirección (una vía)
+- **No Dirigido:** Las aristas son bidireccionales (ida y vuelta)
+- **Ponderado:** Las aristas tienen un peso o costo asociado
+- **No ponderado:** Todas las aristas tienen el mismo valor
 
 ### Características principales:
 
-- **Acceso directo:** O(1) promedio para búsqueda, inserción y eliminación
-- **Función hash:** Convierte la clave en un índice numérico
-- **Colisiones:** Ocurren cuando dos claves tienen el mismo hash
-- **Resolución de colisiones:** Encadenamiento o direccionamiento abierto
-- **Factor de carga:** Controla cuándo redimensionar la tabla
+- **Representación:** Matriz de adyacencia o lista de adyacencia
+- **Conectividad:** Determina si existe camino entre vértices
+- **Ciclos:** Camino que empieza y termina en el mismo vértice
+- **Caminos:** Secuencia de vértices conectados por aristas
 
 ### Analogía
 
-Imagina un **sistema de casilleros** en una universidad:
+Imagina un **mapa de carreteras** entre ciudades:
 
-- **Número de estudiante:** La clave única
-- **Función hash:** El algoritmo que asigna casillero según el número
-- **Casillero:** El bucket donde se guarda la información
-- **Colisión:** Dos estudiantes asignados al mismo casillero
-- **Lista de espera:** Encadenamiento para manejar colisiones
+- **Ciudades:** Vértices del grafo
+- **Carreteras:** Aristas que conectan ciudades
+- **Distancia:** Peso de cada arista (kilómetros)
+- **Ruta:** Camino desde una ciudad a otra
+- **Conexión directa:** Arista entre dos ciudades adyacentes
 
-### Aplicación en Sistema de Estudiantes
+### Aplicación en Red de Ciudades
 
-En un sistema de registro académico, la tabla hash permite:
+En una red de conexiones entre ciudades, el grafo permite:
 
-- **Matrícula rápida:** Registrar estudiantes en O(1)
-- **Búsqueda inmediata:** Encontrar datos por ID de estudiante
-- **Gestión eficiente:** Actualizar calificaciones y datos personales
-- **Prevención de duplicados:** Detectar IDs duplicados instantáneamente
+- **Encontrar rutas:** Determinar caminos entre dos ciudades
+- **Calcular distancias:** Sumar pesos de aristas en una ruta
+- **Verificar conectividad:** Saber si todas las ciudades están conectadas
+- **Optimizar viajes:** Encontrar la ruta más corta
 
 ### Otras Aplicaciones
 
-- **Bases de datos:** Índices hash para búsqueda rápida
-- **Cachés de sistemas:** Almacenamiento temporal de datos frecuentes
-- **Compiladores:** Tablas de símbolos para identificadores
-- **Sistemas de archivos:** Asignación de bloques de disco
-- **Criptografía:** Verificación de integridad de datos
+- **Redes sociales:** Amistades y conexiones entre personas
+- **Internet:** Enrutamiento de paquetes entre routers
+- **GPS/Navegación:** Cálculo de rutas óptimas
+- **Circuitos eléctricos:** Conexiones entre componentes
+- **Organigramas:** Jerarquías empresariales
 
 ## Requisitos Previos
 
@@ -65,152 +67,155 @@ En un sistema de registro académico, la tabla hash permite:
 Practicas/
 ├── README.md                    # Documentación completa
 ├── MERMAID.md                   # Diagramas Mermaid
-└── HashingDiccionario.java      # Implementación de tabla hash
+└── Grafos.java                  # Implementación de grafo
 ```
 
 ## Uso
 
 ### Compilación
 ```bash
-javac HashingDiccionario.java
+javac Grafos.java
 ```
 
 ### Ejecución
 ```bash
-java HashingDiccionario
+java Grafos
 ```
 
 ## Estructura de Datos con POO
 
 ### Clases Principales
 
-#### 1. Estudiante
-Clase que representa un estudiante:
-- **id:** Identificador único (clave)
-- **nombre:** Nombre completo
-- **carrera:** Carrera universitaria
-- **promedio:** Promedio académico
+#### 1. Ciudad (Vértice)
+Clase que representa una ciudad:
+- **nombre:** Nombre de la ciudad
+- **codigo:** Código identificador único
 
-#### 2. NodoHash
-Nodo para el encadenamiento:
-- **estudiante:** Dato almacenado
-- **siguiente:** Referencia al siguiente nodo (colisión)
+#### 2. Arista
+Clase que representa una conexión:
+- **origen:** Ciudad de origen
+- **destino:** Ciudad de destino
+- **peso:** Distancia en kilómetros
 
-#### 3. TablaHash
-Clase principal que implementa el diccionario:
-- **tabla:** Array de buckets
-- **tamaño:** Capacidad de la tabla
-- **elementos:** Cantidad de elementos almacenados
-- **función hash:** Método de dispersión
+#### 3. Grafo
+Clase principal que implementa el grafo:
+- **listaAdyacencia:** Mapa de ciudades y sus conexiones
+- **dirigido:** Tipo de grafo (dirigido/no dirigido)
 
 ### Operaciones Principales
 
-#### 1. Función Hash
-```java
-hash(id) = id % tamañoTabla
-```
-- Convierte el ID en un índice válido
-- Distribuye elementos uniformemente
+#### 1. Agregar Vértice (Ciudad)
+- Añade una nueva ciudad al grafo
 - **Complejidad:** O(1)
 
-#### 2. Insertar (Put)
-- Calcula índice con función hash
-- Crea nuevo nodo en el bucket correspondiente
-- Maneja colisiones con encadenamiento
-- **Complejidad:** O(1) promedio, O(n) peor caso
+#### 2. Agregar Arista (Conexión)
+- Crea una carretera entre dos ciudades con distancia
+- En grafo no dirigido, crea conexión bidireccional
+- **Complejidad:** O(1)
 
-#### 3. Buscar (Get)
-- Calcula índice con función hash
-- Recorre lista enlazada del bucket
-- Retorna el estudiante encontrado
-- **Complejidad:** O(1) promedio, O(n) peor caso
+#### 3. Recorrido DFS (Profundidad)
+- Explora caminos hasta el final antes de retroceder
+- Usa pila (recursivo o iterativo)
+- **Complejidad:** O(V + E)
 
-#### 4. Eliminar (Remove)
-- Calcula índice con función hash
-- Busca y desenlaza el nodo
-- **Complejidad:** O(1) promedio, O(n) peor caso
+#### 4. Recorrido BFS (Anchura)
+- Explora nivel por nivel desde el origen
+- Usa cola
+- **Complejidad:** O(V + E)
 
-#### 5. Contiene (ContainsKey)
-- Verifica si una clave existe
-- **Complejidad:** O(1) promedio
+#### 5. Existe Camino
+- Verifica si hay conexión directa o indirecta entre ciudades
+- **Complejidad:** O(V + E)
 
-## Casos de Uso - Sistema de Estudiantes
+## Casos de Uso - Red de Ciudades
 
-### 1. Registrar Estudiante
+### 1. Agregar Ciudades
 ```java
-TablaHash registro = new TablaHash(10);
-registro.put(202301, new Estudiante(202301, "Ana García", "Ingeniería", 8.5));
-registro.put(202302, new Estudiante(202302, "Luis Martínez", "Medicina", 9.2));
-// Hash asigna automáticamente el bucket
+Grafo red = new Grafo(false); // No dirigido
+red.agregarVertice("Bogotá", "BOG");
+red.agregarVertice("Medellín", "MED");
+red.agregarVertice("Cali", "CAL");
 ```
 
-### 2. Buscar Estudiante
+### 2. Establecer Conexiones
 ```java
-Estudiante e = registro.get(202301);
-// Salida: Ana García - Ingeniería - Promedio: 8.5
+red.agregarArista("BOG", "MED", 420); // Bogotá-Medellín: 420 km
+red.agregarArista("MED", "CAL", 420); // Medellín-Cali: 420 km
+red.agregarArista("BOG", "CAL", 460); // Bogotá-Cali: 460 km
 ```
 
-### 3. Verificar Existencia
+### 3. Recorrido DFS
 ```java
-boolean existe = registro.containsKey(202301);
-// Salida: true
+red.dfs("BOG");
+// Salida: BOG → MED → CAL
+// O: BOG → CAL → MED (depende del orden)
 ```
 
-### 4. Manejo de Colisiones
+### 4. Recorrido BFS
 ```java
-// Si dos IDs generan el mismo hash:
-registro.put(202305, new Estudiante(202305, "Carlos López", "Derecho", 8.0));
-registro.put(202315, new Estudiante(202315, "María Soto", "Arquitectura", 9.0));
-// Ambos se almacenan en el mismo bucket como lista enlazada
+red.bfs("BOG");
+// Salida: BOG → MED → CAL
+// Explora primero los vecinos directos
+```
+
+### 5. Verificar Conectividad
+```java
+boolean conectado = red.existeCamino("BOG", "CAL");
+// Salida: true (existe conexión)
 ```
 
 ## Ejemplo de Ejecución
 
 ```
 ========================================
-  HASHING Y DICCIONARIOS
-  Sistema de Registro de Estudiantes
+  GRAFOS - RED DE CONEXIONES
+  Sistema de Ciudades
 ========================================
 
---- FUNCIÓN HASH ---
-📐 Fórmula: hash(id) = id % 10
-   Ejemplo: hash(202301) = 202301 % 10 = 1
+--- AGREGANDO CIUDADES ---
+🏙️  Ciudad: Bogotá (BOG)
+🏙️  Ciudad: Medellín (MED)
+🏙️  Ciudad: Cali (CAL)
+🏙️  Ciudad: Barranquilla (BAR)
+🏙️  Ciudad: Cartagena (CTG)
 
---- INSERTANDO ESTUDIANTES ---
-📝 Insertando: ID=202301, Ana García, Ingeniería, Promedio=8.5
-   → Hash: 1, Bucket[1] (0 colisiones)
+--- ESTABLECIENDO CONEXIONES ---
+🛣️  BOG ↔ MED: 420 km
+🛣️  MED ↔ CAL: 420 km
+🛣️  BOG ↔ CAL: 460 km
+🛣️  BAR ↔ CTG: 120 km
+🛣️  BOG ↔ BAR: 1050 km
 
-📝 Insertando: ID=202302, Luis Martínez, Medicina, Promedio=9.2
-   → Hash: 2, Bucket[2] (0 colisiones)
+--- LISTA DE ADYACENCIA ---
+📍 BOG (Bogotá):
+   → MED (420 km) → CAL (460 km) → BAR (1050 km)
 
-📝 Insertando: ID=202305, Carlos López, Derecho, Promedio=8.0
-   → Hash: 5, Bucket[5] (0 colisiones)
+📍 MED (Medellín):
+   → BOG (420 km) → CAL (420 km)
 
-📝 Insertando: ID=202315, María Soto, Arquitectura, Promedio=9.0
-   → Hash: 5, Bucket[5] (¡COLISIÓN! Encadenando...)
+📍 CAL (Cali):
+   → MED (420 km) → BOG (460 km)
 
-📝 Insertando: ID=202311, Pedro Ruiz, Economía, Promedio=7.8
-   → Hash: 1, Bucket[1] (¡COLISIÓN! Encadenando...)
+📍 BAR (Barranquilla):
+   → CTG (120 km) → BOG (1050 km)
 
---- ESTADO DE LA TABLA HASH ---
-📊 Factor de carga: 5/10 = 0.50
+📍 CTG (Cartagena):
+   → BAR (120 km)
 
-Bucket[0]: (vacío)
-Bucket[1]: → 202301: Ana García → 202311: Pedro Ruiz
-Bucket[2]: → 202302: Luis Martínez
-Bucket[3]: (vacío)
-Bucket[4]: (vacío)
-Bucket[5]: → 202305: Carlos López → 202315: María Soto
-Bucket[6-9]: (vacíos)
+--- RECORRIDO DFS (Bogotá) ---
+🔍 Orden de visita (Profundidad):
+   BOG → MED → CAL → BAR → CTG
 
---- BÚSQUEDAS ---
-🔍 Buscando ID 202301: Ana García - Ingeniería - 8.5
-🔍 Buscando ID 202315: María Soto - Arquitectura - 9.0
-🔍 Buscando ID 202399: No encontrado
+--- RECORRIDO BFS (Bogotá) ---
+🔍 Orden de visita (Anchura):
+   BOG → MED → CAL → BAR → CTG
 
---- VERIFICACIÓN ---
-✓ ID 202302 existe en el registro
-✗ ID 202399 no existe en el registro
+--- VERIFICACIÓN DE RUTAS ---
+✓ Existe camino de BOG a CTG: true
+  Ruta: BOG → BAR → CTG (1170 km total)
+
+✗ Existe camino de CTG a MED: false
+  No hay conexión disponible
 
 ========================================
   FIN DE LA DEMOSTRACIÓN
@@ -219,64 +224,78 @@ Bucket[6-9]: (vacíos)
 
 ## Complejidad Temporal
 
-| Operación | Promedio | Peor Caso | Espacio |
-|-----------|----------|-----------|---------|
-| Insertar (put) | O(1) | O(n) | O(n) |
-| Buscar (get) | O(1) | O(n) | O(1) |
-| Eliminar (remove) | O(1) | O(n) | O(1) |
-| Contiene (containsKey) | O(1) | O(n) | O(1) |
-| Función Hash | O(1) | O(1) | O(1) |
+| Operación | Complejidad |
+|-----------|-------------|
+| Agregar vértice | O(1) |
+| Agregar arista | O(1) |
+| DFS | O(V + E) |
+| BFS | O(V + E) |
+| Existe camino | O(V + E) |
+| Eliminar vértice | O(V + E) |
+| Eliminar arista | O(E) |
 
-## Ventajas del Hashing
+Donde V = vértices, E = aristas
 
-1. **Velocidad:** Acceso directo en tiempo constante
-2. **Eficiencia:** Ideal para búsquedas frecuentes
-3. **Flexibilidad:** Claves de cualquier tipo hashable
-4. **Escalabilidad:** Redimensionamiento dinámico
+## Representaciones de Grafos
 
-## Desventajas del Hashing
+### Lista de Adyacencia
+- **Ventaja:** Eficiente en espacio para grafos dispersos
+- **Uso:** Grafos con pocas conexiones
+- **Memoria:** O(V + E)
 
-1. **Colisiones:** Requieren estrategias de resolución
-2. **Desorden:** Los elementos no están ordenados
-3. **Memoria:** Puede desperdiciar espacio en buckets vacíos
-4. **Rendimiento:** Degradación con factor de carga alto
+### Matriz de Adyacencia
+- **Ventaja:** Verificación de aristas en O(1)
+- **Uso:** Grafos densos
+- **Memoria:** O(V²)
 
-## Comparación: Hashing vs Otras Estructuras
+## Ventajas de los Grafos
 
-| Aspecto | Tabla Hash | Lista | Árbol Binario |
-|---------|------------|-------|---------------|
-| Búsqueda | O(1) | O(n) | O(log n) |
-| Inserción | O(1) | O(1)* | O(log n) |
-| Eliminación | O(1) | O(n) | O(log n) |
-| Orden | No | Sí | Sí |
-| Memoria | Más | Menos | Más |
+1. **Versatilidad:** Modelan relaciones complejas
+2. **Eficiencia:** Algoritmos optimizados para búsquedas
+3. **Intuitivos:** Representan problemas del mundo real
+4. **Escalables:** Manejan grandes redes
 
-*Al inicio
+## Desventajas de los Grafos
 
-## Resolución de Colisiones
+1. **Complejidad:** Algoritmos pueden ser difíciles de implementar
+2. **Memoria:** Puede consumir mucho espacio
+3. **Recorrido:** Sin un nodo inicial definido
+4. **Ciclos:** Requieren manejo especial
 
-### Encadenamiento (Usado en esta implementación)
-- Cada bucket es una lista enlazada
-- Múltiples elementos pueden coexistir
-- Simple de implementar
-- Memoria dinámica según necesidad
+## Comparación: Grafos vs Otras Estructuras
 
-### Direccionamiento Abierto
-- Busca siguiente bucket disponible
-- Variantes: Lineal, Cuadrático, Doble Hash
-- Mejor uso de memoria
-- Más complejo de implementar
+| Aspecto | Grafo | Lista | Árbol |
+|---------|-------|-------|-------|
+| Relaciones | Complejas | Lineales | Jerárquicas |
+| Búsqueda | O(V+E) | O(n) | O(log n) |
+| Flexibilidad | Alta | Baja | Media |
+| Uso típico | Redes | Secuencias | Jerarquías |
+
+## Algoritmos Importantes en Grafos
+
+### Búsqueda
+- **DFS:** Depth First Search (Profundidad)
+- **BFS:** Breadth First Search (Anchura)
+
+### Caminos
+- **Dijkstra:** Camino más corto desde un origen
+- **Floyd-Warshall:** Caminos más cortos entre todos los pares
+- **Bellman-Ford:** Caminos más cortos con pesos negativos
+
+### Árboles
+- **Prim:** Árbol de expansión mínima
+- **Kruskal:** Árbol de expansión mínima
 
 ## Referencias
 
-- Cormen, T. H., et al. "Introduction to Algorithms" - Capítulo sobre Tablas Hash
-- Sedgewick, R., Wayne, K. "Algorithms" - Sección sobre Hashing
-- https://en.wikipedia.org/wiki/Hash_table
-- https://en.wikipedia.org/wiki/Hash_function
+- Cormen, T. H., et al. "Introduction to Algorithms" - Capítulo sobre Grafos
+- Sedgewick, R., Wayne, K. "Algorithms" - Sección sobre Grafos
+- https://en.wikipedia.org/wiki/Graph_(abstract_data_type)
+- https://en.wikipedia.org/wiki/Graph_traversal
 
 ## Créditos
 
 - **Implementación:** Java con Programación Orientada a Objetos
-- **Técnica:** Hashing con Encadenamiento Separado
-- **Caso de estudio:** Sistema de Registro de Estudiantes
+- **Técnica:** Lista de Adyacencia para Grafo No Dirigido Ponderado
+- **Caso de estudio:** Red de Conexiones entre Ciudades
 - **Materia:** Estructura de Datos I

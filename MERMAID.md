@@ -1,240 +1,321 @@
-# Diagramas Mermaid - Hashing y Diccionarios
+# Diagramas Mermaid - Grafos
 
-## 1. Estructura de la Tabla Hash
+## 1. Estructura del Grafo - Red de Ciudades
+
+```mermaid
+graph LR
+    subgraph "Grafo No Dirigido Ponderado"
+        BOG[Bogotá BOG]
+        MED[Medellín MED]
+        CAL[Cali CAL]
+        BAR[Barranquilla BAR]
+        CTG[Cartagena CTG]
+        
+        BOG -- 420 km --- MED
+        MED -- 420 km --- CAL
+        BOG -- 460 km --- CAL
+        BAR -- 120 km --- CTG
+        BOG -- 1050 km --- BAR
+    end
+    
+    style BOG fill:#ff9999
+    style MED fill:#99ff99
+    style CAL fill:#9999ff
+    style BAR fill:#ffff99
+    style CTG fill:#ff99ff
+```
+
+## 2. Lista de Adyacencia
 
 ```mermaid
 graph TB
-    subgraph "Tabla Hash - Tamaño 10"
-        B0[Bucket 0] --> V0[(vacío)]
-        B1[Bucket 1] --> N1[Nodo: ID=202301]
-        N1 --> N2[Nodo: ID=202311]
-        N2 --> NULL1[null]
+    subgraph "Representación en Lista de Adyacencia"
+        A[BOG Bogotá] --> B[MED 420km]
+        A --> C[CAL 460km]
+        A --> D[BAR 1050km]
         
-        B2[Bucket 2] --> N3[Nodo: ID=202302]
-        N3 --> NULL2[null]
+        E[MED Medellín] --> F[BOG 420km]
+        E --> G[CAL 420km]
         
-        B3[Bucket 3] --> V1[(vacío)]
-        B4[Bucket 4] --> V2[(vacío)]
+        H[CAL Cali] --> I[MED 420km]
+        H --> J[BOG 460km]
         
-        B5[Bucket 5] --> N4[Nodo: ID=202305]
-        N4 --> N5[Nodo: ID=202315]
-        N5 --> NULL3[null]
+        K[BAR Barranquilla] --> L[CTG 120km]
+        K --> M[BOG 1050km]
         
-        B6[Bucket 6] --> V3[(vacío)]
-        B7[Bucket 7] --> V4[(vacío)]
-        B8[Bucket 8] --> V5[(vacío)]
-        B9[Bucket 9] --> V6[(vacío)]
-    end
-    
-    style B1 fill:#ff9999
-    style B2 fill:#99ff99
-    style B5 fill:#9999ff
-```
-
-## 2. Funcionamiento de la Función Hash
-
-```mermaid
-flowchart LR
-    subgraph "Proceso de Hashing"
-        A[ID Estudiante] --> B{Función Hash}
-        B -->|id % 10| C[Índice Bucket]
-        C --> D[Almacenar/Recuperar]
-    end
-    
-    subgraph "Ejemplos"
-        E[202301] -->|202301 % 10 = 1| F[Bucket 1]
-        G[202302] -->|202302 % 10 = 2| H[Bucket 2]
-        I[202305] -->|202305 % 10 = 5| J[Bucket 5]
-        K[202315] -->|202315 % 10 = 5| L[Bucket 5]
+        N[CTG Cartagena] --> O[BAR 120km]
     end
 ```
 
-## 3. Resolución de Colisiones - Encadenamiento
+## 3. Recorrido DFS (Depth First Search)
 
 ```mermaid
 sequenceDiagram
     participant U as Usuario
-    participant T as TablaHash
-    participant B5 as Bucket 5
-    participant N1 as Nodo 202305
-    participant N2 as Nodo 202315
+    participant G as Grafo
+    participant V as Vértice Actual
+    participant P as Pila
+    participant Vst as Visitados
     
-    U->>T: put(202305, Carlos)
-    T->>T: hash(202305) = 5
-    T->>B5: ¿Está vacío?
-    B5-->>T: Sí
-    T->>B5: Crear nodo 202305
+    U->>G: dfs("BOG")
+    G->>P: push(BOG)
+    G->>Vst: marcar BOG
     
-    U->>T: put(202315, María)
-    T->>T: hash(202315) = 5
-    T->>B5: ¿Está vacío?
-    B5-->>T: No, contiene 202305
-    T->>N1: Encadenar 202315
-    N1->>N2: siguiente = nuevo nodo
+    loop Mientras pila no vacía
+        P->>V: pop() → BOG
+        V->>U: Imprimir BOG
+        
+        V->>G: obtener vecinos(BOG)
+        G->>V: [MED, CAL, BAR]
+        
+        loop Para cada vecino no visitado
+            G->>Vst: ¿MED visitado?
+            Vst-->>G: No
+            G->>P: push(MED)
+            G->>Vst: marcar MED
+        end
+        
+        P->>V: pop() → MED
+        V->>U: Imprimir MED
+    end
 ```
 
-## 4. Flujo de Operaciones
+## 4. Recorrido BFS (Breadth First Search)
+
+```mermaid
+sequenceDiagram
+    participant U as Usuario
+    participant G as Grafo
+    participant Q as Cola
+    participant V as Vértice
+    participant Vst as Visitados
+    
+    U->>G: bfs("BOG")
+    G->>Q: enqueue(BOG)
+    G->>Vst: marcar BOG
+    
+    loop Mientras cola no vacía
+        Q->>V: dequeue() → BOG
+        V->>U: Imprimir BOG
+        
+        V->>G: obtener vecinos(BOG)
+        G->>V: [MED, CAL, BAR]
+        
+        loop Para cada vecino no visitado
+            G->>Vst: ¿MED visitado?
+            Vst-->>G: No
+            G->>Q: enqueue(MED)
+            G->>Vst: marcar MED
+        end
+        
+        Q->>V: dequeue() → MED
+        V->>U: Imprimir MED
+    end
+```
+
+## 5. Flujo de Operaciones del Grafo
 
 ```mermaid
 flowchart TD
-    subgraph "Operaciones Tabla Hash"
+    subgraph "Operaciones Grafo"
         Start([Inicio]) --> Op{Operación}
         
-        Op -->|Insertar| Insert[Calcular Hash]
-        Insert --> Insert2[Ir al Bucket]
-        Insert2 --> Insert3{Bucket vacío?}
-        Insert3 -->|Sí| Insert4[Crear nodo]
-        Insert3 -->|No| Insert5[Encadenar al final]
-        Insert4 --> End1([Fin])
-        Insert5 --> End1
+        Op -->|Agregar Ciudad| AddV[Validar código único]
+        AddV --> AddV2[Crear vértice]
+        AddV2 --> AddV3[Agregar a lista adyacencia]
+        AddV3 --> End1([Fin])
         
-        Op -->|Buscar| Search[Calcular Hash]
-        Search --> Search2[Ir al Bucket]
-        Search2 --> Search3{Encontrado?}
-        Search3 -->|Sí| Search4[Retornar dato]
-        Search3 -->|No| Search5[Recorrer lista]
-        Search5 --> Search6{Encontrado?}
-        Search6 -->|Sí| Search4
-        Search6 -->|No| Search7[Retornar null]
-        Search4 --> End2([Fin])
-        Search7 --> End2
+        Op -->|Agregar Carretera| AddE[Validar ciudades existen]
+        AddE --> AddE2{Grafo dirigido?}
+        AddE2 -->|No| AddE3[Crear arista bidireccional]
+        AddE2 -->|Sí| AddE4[Crear arista unidireccional]
+        AddE3 --> AddE5[Actualizar listas]
+        AddE4 --> AddE5
+        AddE5 --> End2([Fin])
         
-        Op -->|Eliminar| Delete[Calcular Hash]
-        Delete --> Delete2[Buscar en Bucket]
-        Delete2 --> Delete3{Encontrado?}
-        Delete3 -->|Sí| Delete4[Desenlazar nodo]
-        Delete3 -->|No| Delete5[Retornar false]
-        Delete4 --> Delete6[Retornar true]
-        Delete6 --> End3([Fin])
-        Delete5 --> End3
+        Op -->|DFS| DFS1[Inicializar pila y visitados]
+        DFS1 --> DFS2[Push vértice inicial]
+        DFS2 --> DFS3{Pila vacía?}
+        DFS3 -->|No| DFS4[Pop vértice]
+        DFS4 --> DFS5{Visitado?}
+        DFS5 -->|No| DFS6[Marcar e imprimir]
+        DFS6 --> DFS7[Push vecinos no visitados]
+        DFS7 --> DFS3
+        DFS5 -->|Sí| DFS3
+        DFS3 -->|Sí| End3([Fin])
+        
+        Op -->|BFS| BFS1[Inicializar cola y visitados]
+        BFS1 --> BFS2[Enqueue vértice inicial]
+        BFS2 --> BFS3{Cola vacía?}
+        BFS3 -->|No| BFS4[Dequeue vértice]
+        BFS4 --> BFS5{Visitado?}
+        BFS5 -->|No| BFS6[Marcar e imprimir]
+        BFS6 --> BFS7[Enqueue vecinos no visitados]
+        BFS7 --> BFS3
+        BFS5 -->|Sí| BFS3
+        BFS3 -->|Sí| End4([Fin])
     end
 ```
 
-## 5. Diagrama de Clases UML
+## 6. Diagrama de Clases UML
 
 ```mermaid
 classDiagram
-    class Estudiante {
-        -int id
+    class Ciudad {
         -String nombre
-        -String carrera
-        -double promedio
-        +Estudiante(int, String, String, double)
-        +getId() int
+        -String codigo
+        +Ciudad(String, String)
         +getNombre() String
-        +getCarrera() String
-        +getPromedio() double
+        +getCodigo() String
+        +equals(Object) boolean
+        +hashCode() int
         +toString() String
     }
     
-    class NodoHash {
-        -Estudiante estudiante
-        -NodoHash siguiente
-        +NodoHash(Estudiante)
-        +getEstudiante() Estudiante
-        +getSiguiente() NodoHash
-        +setSiguiente(NodoHash)
+    class Arista {
+        -Ciudad destino
+        -int peso
+        +Arista(Ciudad, int)
+        +getDestino() Ciudad
+        +getPeso() int
+        +toString() String
     }
     
-    class TablaHash {
-        -NodoHash[] tabla
-        -int tamaño
-        -int elementos
-        +TablaHash(int)
-        +funcionHash(int) int
-        +put(int, Estudiante) void
-        +get(int) Estudiante
-        +remove(int) boolean
-        +containsKey(int) boolean
-        +size() int
-        +mostrarTabla() void
+    class Grafo {
+        -Map~String, Ciudad~ ciudades
+        -Map~String, List~Arista~~ adyacencia
+        -boolean dirigido
+        +Grafo(boolean)
+        +agregarVertice(String, String) boolean
+        +agregarArista(String, String, int) boolean
+        +dfs(String) void
+        +bfs(String) void
+        +existeCamino(String, String) boolean
+        +obtenerVecinos(String) List~Arista~
+        +mostrarGrafo() void
+        +esDirigido() boolean
     }
     
-    NodoHash --> Estudiante : contiene
-    NodoHash --> NodoHash : siguiente
-    TablaHash --> NodoHash : tabla[]
+    Grafo --> Ciudad : contiene
+    Grafo --> Arista : adyacencia
+    Arista --> Ciudad : destino
 ```
 
-## 6. Comparación de Estructuras
+## 7. Comparación: Representaciones de Grafos
 
 ```mermaid
-graph LR
-    subgraph "Búsqueda de Elemento"
+graph TB
+    subgraph "Matriz de Adyacencia"
         direction TB
+        M1[ ]
+        M2[BOG]
+        M3[MED]
+        M4[CAL]
         
-        subgraph "Lista"
-            L1[Nodo 1] --> L2[Nodo 2] --> L3[Nodo 3] --> L4[Nodo 4]
-            L4 --> L5[...] --> L6[Nodo n]
-            style L4 fill:#ff6666
-        end
+        M1 --> M5[BOG]
+        M1 --> M6[MED]
+        M1 --> M7[CAL]
         
-        subgraph "Árbol Binario"
-            A1[Nodo Raíz] --> A2[Nodo Izq]
-            A1 --> A3[Nodo Der]
-            A2 --> A4[Nodo]
-            A3 --> A5[Nodo]
-            style A3 fill:#66ff66
-        end
+        M2 --> M5 --> M8[0]
+        M2 --> M6 --> M9[420]
+        M2 --> M7 --> M10[460]
         
-        subgraph "Tabla Hash"
-            H1[Índice Hash] --> H2[Bucket]
-            H2 --> H3[Dato]
-            style H2 fill:#6666ff
-        end
+        M3 --> M5 --> M11[420]
+        M3 --> M6 --> M12[0]
+        M3 --> M7 --> M13[420]
+        
+        M4 --> M5 --> M14[460]
+        M4 --> M6 --> M15[420]
+        M4 --> M7 --> M16[0]
     end
     
-    ListaNote[O(n)] --> L4
-    ArbolNote[O(log n)] --> A3
-    HashNote[O(1)] --> H2
-```
-
-## 7. Evolución del Factor de Carga
-
-```mermaid
-xychart-beta
-    title "Factor de Carga vs Rendimiento"
-    x-axis [0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
-    y-axis "Colisiones Promedio" 0 --> 5
-    line [0, 0.1, 0.3, 0.7, 1.5, 3.0, 5.0]
-    
-    annotation "Óptimo" at 0.5, 0.3
-    annotation "Redimensionar" at 0.75, 0.7
-```
-
-## 8. Caso de Estudio - Registro Académico
-
-```mermaid
-flowchart TB
-    subgraph "Sistema de Estudiantes"
-        A[Menú Principal] --> B{Opción}
+    subgraph "Lista de Adyacencia"
+        direction TB
+        L1[BOG] --> L2[MED: 420]
+        L1 --> L3[CAL: 460]
         
-        B -->|1| C[Registrar Estudiante]
-        C --> D[Ingresar Datos]
-        D --> E[Calcular Hash]
-        E --> F[Guardar en Tabla]
+        L4[MED] --> L5[BOG: 420]
+        L4 --> L6[CAL: 420]
         
-        B -->|2| G[Buscar Estudiante]
-        G --> H[Ingresar ID]
-        H --> I[Calcular Hash]
-        I --> J[Recuperar Datos]
-        
-        B -->|3| K[Actualizar Datos]
-        K --> L[Buscar por ID]
-        L --> M[Modificar Registro]
-        
-        B -->|4| N[Eliminar Estudiante]
-        N --> O[Buscar por ID]
-        O --> P[Remover de Tabla]
-        
-        B -->|5| Q[Mostrar Reporte]
-        Q --> R[Recorrer Tabla]
-        R --> S[Imprimir Estadísticas]
-        
-        F --> T([Volver])
-        J --> T
-        M --> T
-        P --> T
-        S --> T
-        T --> A
+        L7[CAL] --> L8[BOG: 460]
+        L7 --> L9[MED: 420]
     end
+    
+    MatrizNote[O(V²) espacio] --> M1
+    ListaNote[O(V+E) espacio] --> L1
+```
+
+## 8. Algoritmo de Búsqueda de Camino
+
+```mermaid
+flowchart LR
+    subgraph "Existe Camino (BOG → CTG)"
+        Start([Inicio]) --> Init[Inicializar visitados<br/>Cola con BOG]
+        Init --> Loop{Cola vacía?}
+        Loop -->|No| Dequeue[Dequeue → ciudad]
+        Dequeue --> Check{Ciudad == CTG?}
+        Check -->|Sí| ReturnTrue[Retornar true]
+        Check -->|No| Mark[Marcar visitado]
+        Mark --> Enqueue[Enqueue vecinos<br/>no visitados]
+        Enqueue --> Loop
+        Loop -->|Sí| ReturnFalse[Retornar false]
+        
+        ReturnTrue --> End([Fin])
+        ReturnFalse --> End
+    end
+    
+    style ReturnTrue fill:#90EE90
+    style ReturnFalse fill:#FFB6C1
+```
+
+## 9. Tipos de Grafos
+
+```mermaid
+graph TB
+    subgraph "Grafo Dirigido"
+        D1[A] --> D2[B]
+        D2 --> D3[C]
+        D1 -.-> D3
+    end
+    
+    subgraph "Grafo No Dirigido"
+        U1[X] --- U2[Y]
+        U2 --- U3[Z]
+        U1 --- U3
+    end
+    
+    subgraph "Grafo Ponderado"
+        W1[P] --5-- W2[Q]
+        W2 --3-- W3[R]
+        W1 --7-- W3
+    end
+```
+
+## 10. Red de Ciudades Ampliada
+
+```mermaid
+graph TB
+    subgraph "Red Nacional de Transporte"
+        BOG((Bogotá))
+        MED((Medellín))
+        CAL((Cali))
+        BAR((Barranquilla))
+        CTG((Cartagena))
+        BUC((Bucaramanga))
+        
+        BOG ---|420| MED
+        MED ---|420| CAL
+        BOG ---|460| CAL
+        BOG ---|1050| BAR
+        BAR ---|120| CTG
+        BOG ---|400| BUC
+        BUC ---|550| BAR
+    end
+    
+    style BOG fill:#ff6b6b,stroke:#333,stroke-width:3px
+    style MED fill:#4ecdc4,stroke:#333
+    style CAL fill:#45b7d1,stroke:#333
+    style BAR fill:#f9ca24,stroke:#333
+    style CTG fill:#f0932b,stroke:#333
+    style BUC fill:#6c5ce7,stroke:#333
 ```
