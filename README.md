@@ -27,18 +27,12 @@ flowchart TD
     Root -->|Tradicionales| Rel["PostgreSQL, Oracle, SQL Server"]
     Root -->|Administrados| CL["AWS RDS / Cloud SQL"]
     Root -->|Portátiles| Lite(["SQLite"])
-
-    classDef central fill:#2563eb,color:#fff,font-weight:bold,stroke:#1e40af
-    class Root central
 ```
 
 ### 1.2. Gestión Multi-plataforma
 ```mermaid
 flowchart LR
     Main{{"INFRAESTRUCTURA"}} -->|Modelos| OP["On-Premise"] & CL["Cloud"] & HYB(("HÍBRIDO"))
-
-    classDef hybrid fill:#8b5cf6,color:#fff,stroke:#6d28d9
-    class HYB hybrid
 ```
 
 ### 1.3. Tuning y Rendimiento
@@ -47,9 +41,6 @@ flowchart TD
     Tuning(("TUNING"))
     Tuning -->|RAM| P1["shared_buffers / Buffer Pool"]
     Tuning -->|CPU| P2["MAXDOP / Parallel Workers"]
-
-    classDef core fill:#ef4444,color:#fff,stroke:#b91c1c
-    class Tuning core
 ```
 
 ### 1.4. Herramientas y CLI
@@ -58,9 +49,6 @@ flowchart TD
     Tools(("TOOLS"))
     Tools -->|GUI| D["DBeaver / Azure Data Studio"]
     Tools -->|CLI| Py["Python / Shell Scripts / psql"]
-
-    classDef central fill:#2563eb,color:#fff,font-weight:bold,stroke:#1e40af
-    class Tools central
 ```
 
 ---
@@ -73,9 +61,6 @@ flowchart TD
     Data(("BIG DATA"))
     Data --> CTE["CTEs / Recursividad"]
     Data --> Part["Particionamiento Lógico"]
-
-    classDef central fill:#2563eb,color:#fff,font-weight:bold,stroke:#1e40af
-    class Data central
 ```
 
 ### 2.2. Transformaciones y Ventanas
@@ -84,9 +69,6 @@ flowchart LR
     Trans(("TRANSFORMACIÓN"))
     Trans --> Win["Window Functions: Rank/Lead"]
     Trans --> Pivot["Pivot / Unpivot"]
-
-    classDef core fill:#ef4444,color:#fff,stroke:#b91c1c
-    class Trans core
 ```
 
 ### 2.3. Analítica para BI
@@ -94,9 +76,6 @@ flowchart LR
 flowchart TD
     BI(("ANALÍTICA"))
     BI --> ROLL["ROLLUP / CUBE / Grouping Sets"]
-
-    classDef central fill:#2563eb,color:#fff,font-weight:bold,stroke:#1e40af
-    class BI central
 ```
 
 ### 2.4. Optimización (El Cerebro)
@@ -104,9 +83,6 @@ flowchart TD
 flowchart TD
     Opt(("OPTIMIZER"))
     Opt --> P["Parser"] --> B["Binder"] --> C["Cost Estimator"]
-
-    classDef core fill:#ef4444,color:#fff,stroke:#b91c1c
-    class Opt core
 ```
 
 ---
@@ -118,9 +94,6 @@ flowchart TD
 flowchart TD
     Prog(("LOGIC"))
     Prog --> SP["Stored Procedures"] & UDF["Functions"] & TRG["Triggers"]
-
-    classDef central fill:#2563eb,color:#fff,font-weight:bold,stroke:#1e40af
-    class Prog central
 ```
 
 ### 3.2. Orquestación
@@ -134,9 +107,6 @@ flowchart LR
 flowchart TD
     Sec(("AUDIT"))
     Sec --> CDC["Change Data Capture"] & Logs["Logging Histórico"]
-
-    classDef core fill:#ef4444,color:#fff,stroke:#b91c1c
-    class Sec core
 ```
 
 ### 3.4. Historia y Evolución
@@ -144,9 +114,6 @@ flowchart TD
 flowchart TD
     Hist(("HISTORIA"))
     Hist --> Past["Fat Client"] --> Mid["3-Tier"] --> Now["Cloud Native / Portable"]
-
-    classDef history fill:#fef3c7,stroke:#d97706
-    class Hist history
 ```
 
 ---
