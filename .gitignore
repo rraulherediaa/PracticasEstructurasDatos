@@ -1,0 +1,12 @@
+# Archivos temporales de sistema
+.DS_Store
+Thumbs.db
+
+# Configuración de editores e IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
