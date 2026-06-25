@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Servicio 1: Base de datos relacional (RDBMS) - PostgreSQL
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: examen-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: examenpassword2026
+      POSTGRES_DB: empresa_db
+    ports:
+      - "5433:5432"
+    volumes:
+      # Montar el script SQL de inicialización
+      - ./postgres-init:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - examen_network
+
+  # Servicio 2: Base de datos no relacional (Documental) - MongoDB
+  mongo-db:
+    image: mongo:latest
+    container_name: examen-mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: examenpassword2026
+      MONGO_INITDB_DATABASE: analitica_db
+    ports:
+      - "27018:27017"
+    volumes:
+      # Montar el script JS de inicialización
+      - ./mongo-init:/docker-entrypoint-initdb.d
+      - mongo_data:/data/db
+    networks:
+      - examen_network
+
+volumes:
+  postgres_data:
+  mongo_data:
+
+networks:
+  examen_network:
+    name: examen_final_network
